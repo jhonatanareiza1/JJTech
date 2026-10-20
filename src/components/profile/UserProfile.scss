@@ -1,0 +1,343 @@
+// ==========================================
+// JJ TECH - USER PROFILE STYLES (SCSS)
+// ==========================================
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.user-profile-section {
+  position: relative;
+}
+
+// Guest prompt
+.guest-prompt-card {
+  max-width: 520px;
+  margin: 3rem auto;
+  padding: 3rem 2rem;
+  text-align: center;
+  border-radius: $radius-xl;
+  border: 1px solid rgba(0, 180, 216, 0.35);
+
+  .icon-circle {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: rgba(0, 112, 243, 0.15);
+    border: 2px solid $color-accent;
+    color: $color-accent;
+    @include flex-center;
+    margin: 0 auto 1.5rem auto;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+    color: #FFFFFF;
+    margin-bottom: 0.8rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: $text-secondary;
+    line-height: 1.55;
+    margin-bottom: 2rem;
+  }
+}
+
+// Profile Header Bar
+.profile-header-card {
+  @include flex-between;
+  padding: 1.75rem 2rem;
+  border-radius: $radius-lg;
+  margin-bottom: 2rem;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: flex-start;
+
+  @include md {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .profile-user-info {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+
+    .profile-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, $color-primary, $color-accent);
+      color: #060911;
+      font-family: $font-display;
+      font-size: 1.8rem;
+      font-weight: 800;
+      @include flex-center;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+      flex-shrink: 0;
+    }
+
+    .profile-names {
+      .client-badge {
+        font-size: 0.68rem;
+        font-weight: 800;
+        color: $color-accent;
+        letter-spacing: 1px;
+      }
+
+      h2 {
+        font-size: 1.45rem;
+        color: #FFFFFF;
+        margin: 0.1rem 0 0.35rem 0;
+      }
+
+      .profile-meta {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.78rem;
+        color: $text-secondary;
+        flex-wrap: wrap;
+
+        span {
+          display: flex;
+          align-items: center;
+          gap: 0.35rem;
+        }
+      }
+    }
+  }
+
+  .profile-header-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+}
+
+// Nav tabs
+.profile-tabs-nav {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  @include custom-scrollbar(4px);
+
+  .profile-tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: $radius-md;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid $border-color;
+    color: $text-secondary;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all $transition-fast;
+
+    &:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    &.active {
+      background: rgba(0, 112, 243, 0.2);
+      border-color: $color-accent;
+      color: $color-accent;
+      box-shadow: 0 0 15px rgba(0, 180, 216, 0.3);
+    }
+  }
+}
+
+// Empty state
+.empty-profile-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  border-radius: $radius-lg;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  svg {
+    color: $text-muted;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    color: #FFFFFF;
+  }
+
+  p {
+    font-size: 0.88rem;
+    color: $text-secondary;
+    max-width: 400px;
+  }
+}
+
+// Quotes Grid
+.profile-quotes-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+
+  @include md {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include xl {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .profile-quote-card {
+    padding: 1.5rem;
+    border-radius: $radius-lg;
+    display: flex;
+    flex-direction: column;
+
+    .quote-top {
+      @include flex-between;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid $border-color;
+
+      .quote-code {
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: $color-accent;
+      }
+
+      h4 {
+        font-size: 1.05rem;
+        color: #FFFFFF;
+        margin: 0.15rem 0;
+      }
+
+      .quote-place {
+        font-size: 0.75rem;
+        color: $text-secondary;
+      }
+
+      .status-pill {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 0.25rem 0.65rem;
+        border-radius: $radius-full;
+
+        &.aprobada {
+          background: rgba(16, 185, 129, 0.15);
+          color: $color-success;
+          border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        &.en-negociación, &.guardada {
+          background: rgba(245, 158, 11, 0.15);
+          color: $color-warning;
+          border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        &.pendiente-visita {
+          background: rgba(0, 112, 243, 0.15);
+          color: $color-accent;
+          border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+      }
+    }
+
+    .quote-breakdown-mini {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      margin-bottom: 1.25rem;
+      flex: 1;
+
+      .b-row {
+        @include flex-between;
+        span { color: $text-muted; }
+        strong { color: #FFFFFF; }
+
+        &.bonus {
+          color: $color-success;
+          strong { color: $color-success; }
+        }
+
+        &.grand-total {
+          margin-top: 0.4rem;
+          padding-top: 0.6rem;
+          border-top: 1px solid $border-color;
+          font-size: 0.95rem;
+
+          span { color: $text-secondary; font-weight: 700; }
+          strong { color: $color-accent; font-weight: 800; }
+        }
+      }
+    }
+
+    .quote-card-footer {
+      .w-full { width: 100%; }
+    }
+  }
+}
+
+// Bookings Grid
+.profile-bookings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+
+  @include md {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .profile-booking-card {
+    padding: 1.5rem;
+    border-radius: $radius-lg;
+
+    .b-top {
+      @include flex-between;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid $border-color;
+
+      .booking-code {
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: $color-accent;
+      }
+
+      h4 {
+        font-size: 1.05rem;
+        color: #FFFFFF;
+        margin-top: 0.15rem;
+      }
+
+      .b-status-pill {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 0.25rem 0.65rem;
+        border-radius: $radius-full;
+        background: rgba(16, 185, 129, 0.15);
+        color: $color-success;
+        border: 1px solid rgba(16, 185, 129, 0.35);
+      }
+    }
+
+    .b-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      margin-bottom: 1.25rem;
+
+      .b-line {
+        @include flex-between;
+        span { color: $text-muted; }
+        strong { color: #FFFFFF; }
+      }
+    }
+
+    .b-footer {
+      .w-full { width: 100%; }
+    }
+  }
+}

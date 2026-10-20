@@ -1,0 +1,243 @@
+// ==========================================
+// JJ TECH - WHATSAPP FLOATING BUTTON STYLES (SCSS)
+// ==========================================
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.whatsapp-floating-wrapper {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+// FAB Button
+.whatsapp-fab-button {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: #FFFFFF;
+  box-shadow: 0 6px 25px rgba(37, 211, 102, 0.45);
+  @include flex-center;
+  position: relative;
+  transition: all $transition-normal;
+
+  &:hover {
+    transform: scale(1.08) rotate(5deg);
+    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.65);
+
+    .fab-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-10px);
+    }
+  }
+
+  .fab-pulse-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid #25D366;
+    animation: pulseRing 2s infinite cubic-bezier(0.25, 0, 0, 1);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .fab-tooltip {
+    position: absolute;
+    right: 72px;
+    background: #0A0F1D;
+    color: #FFFFFF;
+    border: 1px solid rgba(0, 180, 216, 0.3);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: $radius-md;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all $transition-fast;
+    pointer-events: none;
+    box-shadow: $shadow-md;
+  }
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.25); opacity: 0; }
+  100% { transform: scale(0.95); opacity: 0; }
+}
+
+// Chat card popover
+.whatsapp-chat-card {
+  width: 320px;
+  background: $bg-card-solid;
+  border: 1px solid rgba(0, 180, 216, 0.35);
+  border-radius: $radius-lg;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), $shadow-glow;
+  margin-bottom: 14px;
+  overflow: hidden;
+  animation: slideUpFade 0.25s ease-out;
+
+  .chat-card-header {
+    background: linear-gradient(135deg, #0A0F1D, #131B2E);
+    border-bottom: 1px solid rgba(0, 180, 216, 0.2);
+    padding: 0.9rem 1.1rem;
+    @include flex-between;
+
+    .chat-agent-info {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+
+      .agent-avatar {
+        position: relative;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, $color-primary, $color-accent);
+        @include flex-center;
+        color: #060911;
+        font-weight: 800;
+        font-size: 0.85rem;
+
+        .online-indicator {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: 10px;
+          height: 10px;
+          background: #10B981;
+          border: 2px solid #0A0F1D;
+          border-radius: 50%;
+        }
+      }
+
+      .agent-meta {
+        h4 {
+          font-size: 0.92rem;
+          color: #FFFFFF;
+          margin-bottom: 0.1rem;
+        }
+
+        p {
+          font-size: 0.72rem;
+          color: $color-accent;
+          display: flex;
+          align-items: center;
+          gap: 0.2rem;
+        }
+      }
+    }
+
+    .chat-close-btn {
+      color: $text-secondary;
+      padding: 0.2rem;
+      border-radius: $radius-sm;
+      &:hover {
+        color: #FFFFFF;
+      }
+    }
+  }
+
+  .chat-card-body {
+    padding: 1.1rem;
+    background: rgba(11, 16, 30, 0.95);
+
+    .incoming-bubble {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: $radius-md $radius-md $radius-md 2px;
+      padding: 0.75rem 0.9rem;
+      font-size: 0.84rem;
+      color: $text-primary;
+      line-height: 1.45;
+      margin-bottom: 1rem;
+
+      .bubble-time {
+        display: block;
+        text-align: right;
+        font-size: 0.68rem;
+        color: $text-muted;
+        margin-top: 0.35rem;
+      }
+    }
+
+    .quick-topics-label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: $color-accent;
+      margin-bottom: 0.6rem;
+    }
+
+    .quick-topics-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+
+      .quick-topic-chip {
+        text-align: left;
+        background: rgba(0, 112, 243, 0.1);
+        border: 1px solid rgba(0, 180, 216, 0.2);
+        color: $text-primary;
+        font-size: 0.78rem;
+        padding: 0.45rem 0.75rem;
+        border-radius: $radius-md;
+        transition: all $transition-fast;
+
+        &:hover {
+          background: rgba(0, 229, 255, 0.2);
+          border-color: $color-accent;
+          transform: translateX(3px);
+        }
+      }
+    }
+  }
+
+  .chat-card-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #080C14;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+    input {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid $border-color;
+      border-radius: $radius-md;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.82rem;
+      color: #FFFFFF;
+
+      &:focus {
+        border-color: $color-accent;
+      }
+    }
+
+    .send-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: $radius-md;
+      background: #25D366;
+      color: #FFFFFF;
+      @include flex-center;
+      &:hover {
+        background: #2FE571;
+      }
+    }
+  }
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,1225 @@
+// ==========================================
+// JJ TECH - ADMIN DASHBOARD STYLES (SCSS)
+// ==========================================
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.admin-section {
+  position: relative;
+}
+
+// Access Gate / Locked Screen
+.admin-lock-section {
+  min-height: 70vh;
+  @include flex-center;
+
+  .lock-card {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    text-align: center;
+    border-radius: $radius-xl;
+    border: 1px solid rgba(0, 180, 216, 0.35);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), $shadow-glow;
+
+    .lock-icon-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(0, 112, 243, 0.15);
+      border: 2px solid $color-accent;
+      color: $color-accent;
+      @include flex-center;
+      margin: 0 auto 1.5rem auto;
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.4);
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      color: #FFFFFF;
+      margin-bottom: 0.85rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: $text-secondary;
+      line-height: 1.55;
+      margin-bottom: 1.5rem;
+    }
+
+    .lock-credentials-hint {
+      background: rgba(11, 16, 30, 0.9);
+      border: 1px dashed rgba(0, 229, 255, 0.3);
+      padding: 0.75rem 1rem;
+      border-radius: $radius-md;
+      margin-bottom: 1.75rem;
+
+      span {
+        display: block;
+        font-size: 0.75rem;
+        color: $text-muted;
+        margin-bottom: 0.2rem;
+      }
+
+      code {
+        color: $color-accent;
+        font-size: 0.85rem;
+        font-family: monospace;
+      }
+    }
+  }
+}
+
+// Admin Header Bar
+.admin-header-bar {
+  @include flex-between;
+  padding: 1.5rem 2rem;
+  border-radius: $radius-lg;
+  margin-bottom: 2rem;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+
+  @include md {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .admin-brand-status {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .admin-avatar-box {
+      width: 48px;
+      height: 48px;
+      border-radius: $radius-md;
+      background: rgba(0, 112, 243, 0.2);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      @include flex-center;
+      flex-shrink: 0;
+
+      .icon-cyan {
+        color: $color-accent;
+      }
+    }
+
+    .admin-badge-label {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: $color-accent;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      color: #FFFFFF;
+      margin: 0.1rem 0;
+    }
+
+    .user-welcome {
+      font-size: 0.78rem;
+      color: $text-secondary;
+
+      strong {
+        color: #FFFFFF;
+      }
+    }
+  }
+
+  .admin-header-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .cloud-status-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.45rem 0.85rem;
+      border-radius: $radius-full;
+      cursor: pointer;
+      transition: all $transition-fast;
+
+      &.cloud-active {
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        color: #10B981;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+
+        &:hover {
+          background: rgba(16, 185, 129, 0.25);
+        }
+      }
+
+      &.cloud-local {
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        color: #FBBF24;
+
+        &:hover {
+          background: rgba(245, 158, 11, 0.22);
+          border-color: rgba(245, 158, 11, 0.6);
+        }
+      }
+    }
+
+    .reset-btn {
+      color: $text-muted;
+      &:hover {
+        color: $color-warning;
+        border-color: $color-warning;
+      }
+    }
+  }
+}
+
+// Navigation Tabs
+.admin-nav-tabs {
+  display: flex;
+  gap: 0.6rem;
+  overflow-x: auto;
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+  @include custom-scrollbar(4px);
+
+  .tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: $radius-md;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid $border-color;
+    color: $text-secondary;
+    font-size: 0.88rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all $transition-fast;
+
+    &:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    &.active {
+      color: #FFFFFF;
+      background: rgba(0, 112, 243, 0.2);
+      border-color: $color-accent;
+      box-shadow: 0 0 15px rgba(0, 180, 216, 0.3);
+    }
+  }
+}
+
+// 1. Moodboard KPIs
+.kpis-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+
+  @include sm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include xl {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .kpi-card {
+    padding: 1.5rem;
+    border-radius: $radius-lg;
+    display: flex;
+    flex-direction: column;
+
+    .kpi-header {
+      @include flex-between;
+      margin-bottom: 1rem;
+
+      .kpi-title {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: $text-secondary;
+      }
+
+      .kpi-icon-box {
+        width: 38px;
+        height: 38px;
+        border-radius: $radius-sm;
+        @include flex-center;
+
+        &.cyan {
+          background: rgba(0, 229, 255, 0.15);
+          color: $color-accent;
+        }
+
+        &.orange {
+          background: rgba(245, 158, 11, 0.15);
+          color: $color-warning;
+        }
+
+        &.green {
+          background: rgba(16, 185, 129, 0.15);
+          color: $color-success;
+        }
+
+        &.purple {
+          background: rgba(168, 85, 247, 0.15);
+          color: #A855F7;
+        }
+      }
+    }
+
+    .kpi-value {
+      font-family: $font-display;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 0.6rem;
+
+      &.green-text {
+        color: $color-success;
+      }
+    }
+
+    .kpi-trend {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+
+      &.positive {
+        color: $color-success;
+      }
+    }
+
+    .kpi-subtext {
+      font-size: 0.74rem;
+      color: $text-muted;
+    }
+
+    &.highlight-kpi {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(15, 23, 42, 0.8));
+    }
+  }
+}
+
+// Charts Grid
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+
+  @include lg {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .chart-card {
+    padding: 1.75rem;
+    border-radius: $radius-lg;
+
+    .chart-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid $border-color;
+
+      .icon-cyan {
+        color: $color-accent;
+        margin-top: 2px;
+      }
+
+      h3 {
+        font-size: 1.1rem;
+        color: #FFFFFF;
+      }
+
+      p {
+        font-size: 0.78rem;
+        color: $text-secondary;
+      }
+    }
+  }
+}
+
+// Cost Breakdown Progress Bars
+.cost-breakdown-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin-bottom: 1.5rem;
+
+  .cost-item-block {
+    .cost-item-label {
+      @include flex-between;
+      font-size: 0.82rem;
+      margin-bottom: 0.35rem;
+
+      .name {
+        color: $text-primary;
+        font-weight: 500;
+      }
+
+      .val {
+        color: $text-secondary;
+        font-weight: 600;
+      }
+    }
+
+    .progress-track {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: $radius-full;
+      overflow: hidden;
+
+      .progress-fill {
+        height: 100%;
+        border-radius: $radius-full;
+        transition: width 0.8s ease-in-out;
+      }
+    }
+  }
+}
+
+.cost-summary-pills {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .pill-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    color: $text-secondary;
+    background: rgba(11, 16, 30, 0.6);
+    padding: 0.4rem 0.75rem;
+    border-radius: $radius-md;
+
+    strong {
+      color: #FFFFFF;
+    }
+  }
+}
+
+// Revenue Lines
+.revenue-lines-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .revenue-line-row {
+    @include flex-between;
+    padding: 0.75rem 1rem;
+    background: rgba(11, 16, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: $radius-md;
+
+    .line-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      .line-color-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .line-name {
+        display: block;
+        font-size: 0.88rem;
+        color: #FFFFFF;
+      }
+
+      .line-count {
+        font-size: 0.72rem;
+        color: $text-muted;
+      }
+    }
+
+    .line-revenue {
+      font-size: 0.95rem;
+      color: $color-accent;
+    }
+  }
+}
+
+// Trend Table
+.trend-card {
+  padding: 1.75rem;
+  border-radius: $radius-lg;
+
+  .chart-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid $border-color;
+
+    .icon-cyan {
+      color: $color-accent;
+      margin-top: 2px;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      color: #FFFFFF;
+    }
+
+    p {
+      font-size: 0.78rem;
+      color: $text-secondary;
+    }
+  }
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+
+  th {
+    text-align: left;
+    padding: 0.85rem 1rem;
+    background: rgba(15, 23, 42, 0.95);
+    color: $text-secondary;
+    font-weight: 600;
+    border-bottom: 1px solid $border-color;
+  }
+
+  td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: $text-primary;
+  }
+
+  tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .cyan-text { color: $color-accent; }
+  .green-text { color: $color-success; }
+  .muted-text { color: $text-secondary; }
+
+  .margin-badge {
+    background: rgba(0, 229, 255, 0.1);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    color: $color-accent;
+    padding: 0.2rem 0.5rem;
+    border-radius: $radius-sm;
+    font-weight: 700;
+    font-size: 0.78rem;
+  }
+}
+
+// 2. Inventory Management Styles
+.inventory-actions-bar {
+  @include flex-between;
+  margin-bottom: 1.5rem;
+
+  h3 {
+    font-size: 1.25rem;
+    color: #FFFFFF;
+  }
+
+  p {
+    font-size: 0.82rem;
+    color: $text-secondary;
+  }
+}
+
+.inventory-table-card {
+  border-radius: $radius-lg;
+  overflow: hidden;
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .table-prod-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .table-thumb {
+      width: 44px;
+      height: 44px;
+      object-fit: cover;
+      border-radius: $radius-sm;
+    }
+
+    strong {
+      display: block;
+      color: #FFFFFF;
+      font-size: 0.88rem;
+    }
+
+    .brand-sub {
+      font-size: 0.72rem;
+      color: $color-accent;
+    }
+  }
+
+  .category-pill {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid $border-color;
+    padding: 0.2rem 0.55rem;
+    border-radius: $radius-full;
+    font-size: 0.72rem;
+    color: $text-secondary;
+    text-transform: uppercase;
+  }
+
+  .stock-badge {
+    color: $color-success;
+    font-weight: 700;
+  }
+
+  .table-actions {
+    display: flex;
+    gap: 0.5rem;
+
+    .icon-action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: $radius-sm;
+      @include flex-center;
+      color: $text-secondary;
+
+      &.edit:hover {
+        background: rgba(0, 112, 243, 0.2);
+        color: $color-accent;
+      }
+
+      &.delete:hover {
+        background: rgba(239, 68, 68, 0.2);
+        color: $color-danger;
+      }
+    }
+  }
+}
+
+// 3. Quotes Styles
+.quotes-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+
+  @include md {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include xl {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .admin-quote-card {
+    padding: 1.5rem;
+    border-radius: $radius-lg;
+    display: flex;
+    flex-direction: column;
+
+    .quote-card-top {
+      @include flex-between;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid $border-color;
+
+      .quote-id {
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: $color-accent;
+      }
+
+      h4 {
+        font-size: 1.05rem;
+        color: #FFFFFF;
+        margin: 0.1rem 0;
+      }
+
+      .quote-loc {
+        font-size: 0.75rem;
+        color: $text-secondary;
+      }
+
+      .status-pill {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 0.25rem 0.65rem;
+        border-radius: $radius-full;
+
+        &.aprobada {
+          background: rgba(16, 185, 129, 0.15);
+          color: $color-success;
+          border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        &.en-negociación {
+          background: rgba(245, 158, 11, 0.15);
+          color: $color-warning;
+          border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        &.pendiente-visita {
+          background: rgba(0, 112, 243, 0.15);
+          color: $color-accent;
+          border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+      }
+    }
+
+    .quote-financials-mini {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      margin-bottom: 1.25rem;
+      flex: 1;
+
+      div {
+        @include flex-between;
+        span { color: $text-muted; }
+        strong { color: #FFFFFF; }
+      }
+
+      .grand-total-row {
+        margin-top: 0.35rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid $border-color;
+        font-size: 0.95rem;
+
+        span { color: $text-secondary; font-weight: 600; }
+        strong { color: $color-accent; font-weight: 800; }
+      }
+    }
+
+    .quote-status-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+
+      .label {
+        font-size: 0.72rem;
+        color: $text-muted;
+      }
+
+      .status-btn {
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.25rem 0.55rem;
+        border-radius: $radius-sm;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: $text-secondary;
+
+        &:hover {
+          color: #FFFFFF;
+          border-color: $color-accent;
+        }
+
+        &.approve:hover, &.approve.active {
+          background: $color-success;
+          color: #060911;
+          border-color: $color-success;
+        }
+      }
+    }
+  }
+}
+
+// 4. Bookings Styles
+.bookings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+
+  @include md {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-booking-card {
+    padding: 1.5rem;
+    border-radius: $radius-lg;
+
+    .booking-card-top {
+      @include flex-between;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid $border-color;
+
+      .booking-id {
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: $color-accent;
+      }
+
+      h4 {
+        font-size: 1.1rem;
+        color: #FFFFFF;
+        margin: 0.1rem 0;
+      }
+
+      .phone-tag {
+        font-size: 0.75rem;
+        color: $text-secondary;
+      }
+
+      .booking-status-tag {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 0.25rem 0.65rem;
+        border-radius: $radius-full;
+        background: rgba(0, 112, 243, 0.15);
+        color: $color-accent;
+        border: 1px solid rgba(0, 229, 255, 0.3);
+      }
+    }
+
+    .booking-details-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.84rem;
+      margin-bottom: 1.25rem;
+
+      .b-line {
+        @include flex-between;
+        span { color: $text-muted; }
+        strong { color: #FFFFFF; }
+
+        &.notes {
+          flex-direction: column;
+          align-items: flex-start;
+          background: rgba(11, 16, 30, 0.6);
+          padding: 0.6rem;
+          border-radius: $radius-sm;
+
+          p {
+            font-size: 0.78rem;
+            color: $text-secondary;
+            margin-top: 0.25rem;
+          }
+        }
+      }
+    }
+
+    .booking-actions {
+      display: flex;
+      gap: 0.5rem;
+
+      .status-btn {
+        flex: 1;
+        padding: 0.4rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: $radius-sm;
+        border: 1px solid $border-color;
+        color: $text-secondary;
+
+        &.confirm:hover { background: rgba(0, 112, 243, 0.2); color: $color-accent; border-color: $color-accent; }
+        &.complete:hover { background: rgba(16, 185, 129, 0.2); color: $color-success; border-color: $color-success; }
+        &.cancel:hover { background: rgba(239, 68, 68, 0.2); color: $color-danger; border-color: $color-danger; }
+      }
+    }
+  }
+}
+
+// Product Edit Modal Form
+.product-edit-modal {
+  max-width: 650px;
+
+  .modal-header {
+    @include flex-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid $border-color;
+
+    h3 {
+      font-size: 1.3rem;
+      color: #FFFFFF;
+    }
+
+    .close-btn {
+      color: $text-secondary;
+    }
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .modal-actions {
+    @include flex-between;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid $border-color;
+  }
+}
+
+// Project Edit Modal modifier
+.project-edit-modal {
+  max-width: 740px;
+}
+
+// Location Pill for table
+.location-pill-mini {
+  background: rgba(11, 16, 30, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.2rem 0.5rem;
+  border-radius: $radius-full;
+  font-size: 0.75rem;
+  color: #F8FAFC;
+  white-space: nowrap;
+}
+
+// Image Uploader Styles
+.image-upload-group {
+  margin-top: 0.5rem;
+
+  .image-uploader-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    background: rgba(6, 9, 17, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: $radius-md;
+    padding: 1.25rem;
+
+    @include sm {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+
+    .image-preview-box {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      border-radius: $radius-md;
+      overflow: hidden;
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      box-shadow: 0 0 15px rgba(0, 180, 216, 0.2);
+      flex-shrink: 0;
+      background: #000;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .uploading-badge {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 112, 243, 0.9);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-align: center;
+        padding: 0.2rem;
+        backdrop-filter: blur(4px);
+      }
+    }
+
+    .uploader-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      flex: 1;
+
+      .file-upload-dropzone {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        border: 2px dashed rgba(0, 229, 255, 0.35);
+        background: rgba(0, 112, 243, 0.08);
+        border-radius: $radius-md;
+        cursor: pointer;
+        transition: all $transition-fast;
+
+        &:hover {
+          border-color: $color-accent;
+          background: rgba(0, 112, 243, 0.16);
+          box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+
+          .upload-icon {
+            transform: scale(1.1);
+            color: $color-accent;
+          }
+        }
+
+        .upload-icon {
+          color: $color-primary-light;
+          flex-shrink: 0;
+          transition: transform $transition-fast, color $transition-fast;
+        }
+
+        .dropzone-text {
+          display: flex;
+          flex-direction: column;
+
+          strong {
+            font-size: 0.88rem;
+            color: #FFFFFF;
+          }
+
+          span {
+            font-size: 0.72rem;
+            color: $text-secondary;
+          }
+        }
+      }
+
+      .preset-images-picker {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+
+        span {
+          font-size: 0.74rem;
+          color: $text-muted;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+
+        .preset-thumbnails {
+          display: flex;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+
+          .preset-thumb {
+            width: 44px;
+            height: 44px;
+            object-fit: cover;
+            border-radius: $radius-sm;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all $transition-fast;
+
+            &:hover {
+              transform: scale(1.08);
+              border-color: rgba(0, 229, 255, 0.5);
+            }
+
+            &.selected {
+              border-color: $color-accent;
+              box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+            }
+          }
+        }
+      }
+
+      .url-fallback-input {
+        input {
+          width: 100%;
+          padding: 0.5rem 0.75rem;
+          font-size: 0.8rem;
+          background: rgba(11, 16, 30, 0.8);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: $radius-sm;
+          color: $text-primary;
+
+          &:focus {
+            border-color: $color-accent;
+            outline: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Firebase Setup & Status Modal
+.firebase-setup-modal {
+  max-width: 680px;
+
+  .firebase-status-banner {
+    margin-bottom: 1.5rem;
+
+    .status-pill {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding: 1rem 1.25rem;
+      border-radius: $radius-md;
+
+      &.connected {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        color: #34D399;
+
+        strong {
+          color: #10B981;
+          display: block;
+          margin-bottom: 0.25rem;
+          font-size: 0.95rem;
+        }
+
+        p {
+          color: $text-secondary;
+          font-size: 0.85rem;
+          margin: 0;
+          line-height: 1.45;
+        }
+      }
+
+      &.pending {
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        color: #FBBF24;
+
+        strong {
+          color: #F59E0B;
+          display: block;
+          margin-bottom: 0.25rem;
+          font-size: 0.95rem;
+        }
+
+        p {
+          color: $text-secondary;
+          font-size: 0.85rem;
+          margin: 0;
+          line-height: 1.45;
+        }
+      }
+    }
+  }
+
+  .setup-steps-guide {
+    h4 {
+      font-size: 0.95rem;
+      color: #FFFFFF;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .steps-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.25rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+
+      li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+
+        .step-num {
+          width: 26px;
+          height: 26px;
+          border-radius: 50%;
+          background: rgba(0, 112, 243, 0.2);
+          border: 1px solid $color-accent;
+          color: $color-accent;
+          font-size: 0.8rem;
+          font-weight: 800;
+          @include flex-center;
+          flex-shrink: 0;
+        }
+
+        strong {
+          color: #FFFFFF;
+          font-size: 0.88rem;
+          display: block;
+          margin-bottom: 0.15rem;
+        }
+
+        p {
+          color: $text-secondary;
+          font-size: 0.82rem;
+          margin: 0;
+          line-height: 1.4;
+
+          a {
+            color: $color-accent;
+            text-decoration: underline;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+          }
+
+          code {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            color: $color-accent;
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+
+    .env-code-box {
+      background: rgba(11, 16, 30, 0.95);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      border-radius: $radius-md;
+      overflow: hidden;
+
+      .env-code-header {
+        @include flex-between;
+        padding: 0.5rem 0.85rem;
+        background: rgba(255, 255, 255, 0.04);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+        span {
+          font-size: 0.75rem;
+          color: $text-muted;
+          font-family: monospace;
+        }
+
+        .btn-copy-env {
+          background: transparent;
+          border: 1px solid rgba(0, 229, 255, 0.3);
+          color: $color-accent;
+          padding: 0.25rem 0.6rem;
+          border-radius: $radius-sm;
+          font-size: 0.75rem;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          cursor: pointer;
+          transition: all $transition-fast;
+
+          &:hover {
+            background: rgba(0, 229, 255, 0.1);
+          }
+        }
+      }
+
+      .env-code-content {
+        padding: 0.85rem;
+        margin: 0;
+        font-family: monospace;
+        font-size: 0.78rem;
+        color: #A5F3FC;
+        line-height: 1.45;
+        overflow-x: auto;
+        @include custom-scrollbar(4px);
+      }
+    }
+  }
+}
+

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="jjGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#0070F3"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="10" fill="#0A0F1D"/>
+  <!-- JJ glyph -->
+  <path d="M14 12V28C14 33 11 35 8 35" stroke="url(#jjGrad)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M24 12V28C24 33 21 35 18 35" stroke="url(#jjGrad)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="34" cy="24" r="3" fill="#00E5FF"/>
+</svg>

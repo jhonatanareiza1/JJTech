@@ -1,0 +1,189 @@
+// ==========================================
+// JJ TECH - AUTH MODALS STYLES (SCSS)
+// ==========================================
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.auth-modal-box, .admin-auth-box {
+  max-width: 440px;
+  position: relative;
+  padding: 2.2rem;
+
+  .auth-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: $text-secondary;
+    padding: 0.35rem;
+    border-radius: $radius-sm;
+
+    &:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .auth-modal-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+
+    .auth-brand-glyph {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(0, 112, 243, 0.15);
+      border: 2px solid $color-accent;
+      margin: 0 auto 0.85rem auto;
+      @include flex-center;
+      font-family: $font-display;
+      font-weight: 900;
+      font-size: 1.3rem;
+      @include text-gradient($color-accent, $color-primary);
+    }
+
+    .admin-lock-glyph {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(0, 229, 255, 0.15);
+      border: 2px solid $color-accent;
+      color: $color-accent;
+      margin: 0 auto 0.85rem auto;
+      @include flex-center;
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      color: #FFFFFF;
+      margin-bottom: 0.3rem;
+    }
+
+    p {
+      font-size: 0.82rem;
+      color: $text-secondary;
+      line-height: 1.45;
+    }
+  }
+
+  .auth-tab-switch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: rgba(11, 16, 30, 0.8);
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    padding: 0.25rem;
+    margin-bottom: 1.5rem;
+
+    .switch-tab {
+      padding: 0.55rem;
+      border-radius: calc($radius-md - 2px);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: $text-secondary;
+      transition: all $transition-fast;
+
+      &.active {
+        background: rgba(0, 112, 243, 0.25);
+        border: 1px solid rgba(0, 229, 255, 0.3);
+        color: #FFFFFF;
+      }
+    }
+  }
+
+  .auth-error-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: $color-danger;
+    padding: 0.6rem 0.8rem;
+    border-radius: $radius-md;
+    font-size: 0.78rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .field-icon {
+      position: absolute;
+      left: 12px;
+      color: $text-muted;
+      pointer-events: none;
+    }
+
+    input {
+      padding-left: 2.4rem !important;
+    }
+  }
+
+  .w-full {
+    width: 100%;
+  }
+
+  .auth-demo-shortcut {
+    margin-top: 1.5rem;
+    text-align: center;
+
+    .divider-text {
+      display: block;
+      font-size: 0.72rem;
+      color: $text-muted;
+      margin-bottom: 0.75rem;
+      position: relative;
+
+      &::before, &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 25%;
+        height: 1px;
+        background: $border-color;
+      }
+
+      &::before { left: 5%; }
+      &::after { right: 5%; }
+    }
+
+    .demo-client-btn {
+      font-size: 0.82rem;
+      border-color: rgba(0, 229, 255, 0.3);
+      color: $color-accent;
+
+      &:hover {
+        background: rgba(0, 229, 255, 0.1);
+      }
+    }
+  }
+
+  .auth-switch-to-admin {
+    margin-top: 1.25rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: $text-muted;
+
+    button {
+      margin-left: 0.4rem;
+      color: $color-accent;
+      font-weight: 600;
+      text-decoration: underline;
+
+      &:hover {
+        color: #FFFFFF;
+      }
+    }
+  }
+
+  .quick-admin-login-bar {
+    margin-top: 1.25rem;
+
+    .fast-admin-btn {
+      font-size: 0.8rem;
+      color: $color-accent;
+      border-color: rgba(0, 180, 216, 0.4);
+    }
+  }
+}

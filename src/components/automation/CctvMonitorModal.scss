@@ -1,0 +1,242 @@
+// ==========================================
+// JJ TECH - CCTV MONITOR MODAL STYLES (SCSS)
+// ==========================================
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.cctv-monitor-modal {
+  max-width: 980px;
+  width: 95%;
+  background: #060911;
+  border: 1px solid rgba(0, 180, 216, 0.4);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), $shadow-glow;
+  padding: 1.5rem;
+  border-radius: $radius-xl;
+
+  .cctv-nvr-topbar {
+    @include flex-between;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid $border-color;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+
+    .nvr-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      .nvr-pulse-dot {
+        color: $color-accent;
+        animation: pulseGlow 1.5s infinite;
+      }
+
+      h3 {
+        font-size: 1.15rem;
+        color: #FFFFFF;
+      }
+
+      .nvr-sub {
+        font-size: 0.72rem;
+        color: $text-secondary;
+      }
+    }
+
+    .nvr-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+
+      .nvr-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: $radius-sm;
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid $border-color;
+        color: $text-secondary;
+        font-size: 0.78rem;
+        font-weight: 600;
+        transition: all $transition-fast;
+
+        &:hover, &.active {
+          color: $color-accent;
+          border-color: $color-accent;
+          background: rgba(0, 112, 243, 0.15);
+        }
+      }
+
+      .nvr-close {
+        color: $text-secondary;
+        padding: 0.35rem;
+        border-radius: $radius-sm;
+        &:hover {
+          color: #FFFFFF;
+          background: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+  }
+
+  .cctv-motion-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(0, 112, 243, 0.12);
+    border: 1px solid rgba(0, 229, 255, 0.25);
+    padding: 0.5rem 0.9rem;
+    border-radius: $radius-md;
+    font-size: 0.78rem;
+    color: $color-accent;
+    margin-bottom: 1rem;
+  }
+
+  // Camera Grid
+  .cctv-grid {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+
+    &.quad-feed {
+      grid-template-columns: 1fr;
+      @include sm {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    &.single-feed {
+      grid-template-columns: 1fr;
+      .cam-box {
+        height: 480px;
+      }
+    }
+
+    .cam-box {
+      position: relative;
+      height: 220px;
+      background: #000000;
+      border-radius: $radius-md;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+      transition: all $transition-fast;
+
+      &:hover {
+        border-color: $color-accent;
+        box-shadow: 0 0 15px rgba(0, 180, 216, 0.3);
+      }
+
+      .cam-video-feed {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: filter $transition-normal;
+      }
+
+      &.night-vision-filter .cam-video-feed {
+        filter: grayscale(100%) brightness(1.2) contrast(1.3) sepia(30%) hue-rotate(80deg);
+      }
+
+      // HUD Overlay
+      .cam-hud-top {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        right: 8px;
+        @include flex-between;
+        font-family: monospace;
+        font-size: 0.72rem;
+        background: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(4px);
+        padding: 0.2rem 0.5rem;
+        border-radius: $radius-sm;
+
+        .rec-indicator {
+          display: flex;
+          align-items: center;
+          gap: 0.35rem;
+          color: #EF4444;
+
+          .rec-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #EF4444;
+            animation: pulseGlow 1s infinite;
+          }
+        }
+
+        .cam-name-tag {
+          color: #FFFFFF;
+          font-weight: 600;
+        }
+
+        .cam-clock {
+          color: $color-accent;
+        }
+      }
+
+      .motion-detected-tag {
+        position: absolute;
+        top: 36px;
+        left: 8px;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        background: rgba(239, 68, 68, 0.85);
+        color: #FFFFFF;
+        font-size: 0.65rem;
+        font-weight: 800;
+        padding: 0.2rem 0.5rem;
+        border-radius: $radius-sm;
+        animation: pulseGlow 1s infinite;
+      }
+
+      .cam-hud-bottom {
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+        @include flex-between;
+        font-family: monospace;
+        font-size: 0.68rem;
+        color: $text-secondary;
+        background: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(4px);
+        padding: 0.2rem 0.5rem;
+        border-radius: $radius-sm;
+
+        .cam-action-icons {
+          display: flex;
+          gap: 0.4rem;
+
+          button {
+            color: $text-secondary;
+            padding: 0.2rem;
+            border-radius: 3px;
+
+            &:hover {
+              color: $color-accent;
+              background: rgba(255, 255, 255, 0.1);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .cctv-nvr-bottombar {
+    @include flex-between;
+    padding-top: 0.85rem;
+    border-top: 1px solid $border-color;
+    font-size: 0.78rem;
+
+    .storage-status {
+      color: $text-secondary;
+      strong {
+        color: $color-accent;
+      }
+    }
+  }
+}

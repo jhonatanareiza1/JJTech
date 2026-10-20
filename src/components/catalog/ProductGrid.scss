@@ -1,0 +1,423 @@
+// ==========================================
+// JJ TECH - PRODUCT CATALOG STYLES (SCSS)
+// ==========================================
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.catalog-section {
+  position: relative;
+}
+
+.catalog-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: $radius-lg;
+  margin-bottom: 1.5rem;
+
+  @include md {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    background: $bg-input;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    padding: 0.65rem 1rem;
+
+    .search-icon {
+      color: $text-secondary;
+    }
+
+    input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: #FFFFFF;
+      font-size: 0.9rem;
+    }
+  }
+
+  .sort-box {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: $bg-input;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    padding: 0.65rem 1rem;
+
+    .sort-icon {
+      color: $color-accent;
+    }
+
+    select {
+      background: none;
+      border: none;
+      color: #FFFFFF;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+  }
+}
+
+// Category Chips
+.category-chips {
+  display: flex;
+  gap: 0.6rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  @include custom-scrollbar(4px);
+
+  .cat-chip {
+    padding: 0.55rem 1.1rem;
+    border-radius: $radius-full;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid $border-color;
+    color: $text-secondary;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all $transition-fast;
+
+    &:hover {
+      color: #FFFFFF;
+      border-color: rgba(0, 180, 216, 0.4);
+    }
+
+    &.active {
+      background: rgba(0, 112, 243, 0.2);
+      border-color: $color-accent;
+      color: $color-accent;
+      box-shadow: 0 0 12px rgba(0, 180, 216, 0.3);
+    }
+  }
+}
+
+// Products Grid
+.products-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  @include sm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include lg {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include xl {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.no-products-found {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: $radius-lg;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: $text-secondary;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  transition: all $transition-normal;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 180, 216, 0.25);
+    border-color: rgba(0, 229, 255, 0.35);
+
+    .image-overlay-actions {
+      opacity: 1;
+    }
+  }
+
+  .product-image-container {
+    position: relative;
+    height: 220px;
+    background: #000;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform $transition-slow;
+    }
+
+    &:hover img {
+      transform: scale(1.06);
+    }
+
+    .image-overlay-actions {
+      position: absolute;
+      inset: 0;
+      background: rgba(6, 9, 17, 0.5);
+      backdrop-filter: blur(4px);
+      @include flex-center;
+      opacity: 0;
+      transition: opacity $transition-fast;
+
+      .quick-view-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: #FFFFFF;
+        color: #060911;
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 0.5rem 1rem;
+        border-radius: $radius-full;
+        box-shadow: $shadow-md;
+        &:hover {
+          background: $color-accent;
+        }
+      }
+    }
+
+    .partner-ribbon {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #F59E0B;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 0.25rem 0.6rem;
+      border-radius: $radius-full;
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+  }
+
+  .product-card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .brand-rating-row {
+      @include flex-between;
+      margin-bottom: 0.4rem;
+
+      .product-brand {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: $color-accent;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+
+      .rating-stars {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.78rem;
+        color: #FFFFFF;
+        font-weight: 600;
+      }
+    }
+
+    .product-title {
+      font-size: 1.05rem;
+      color: #FFFFFF;
+      margin-bottom: 0.5rem;
+      line-height: 1.35;
+    }
+
+    .product-desc {
+      font-size: 0.82rem;
+      color: $text-secondary;
+      line-height: 1.5;
+      margin-bottom: 0.85rem;
+      flex: 1;
+    }
+
+    .product-mini-specs {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-bottom: 1.1rem;
+
+      li {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-size: 0.76rem;
+        color: $text-muted;
+
+        .feat-check {
+          color: $color-accent;
+          flex-shrink: 0;
+        }
+      }
+    }
+
+    .product-price-row {
+      @include flex-between;
+      padding: 0.75rem 0;
+      border-top: 1px solid $border-color;
+      border-bottom: 1px solid $border-color;
+      margin-bottom: 1rem;
+
+      .price-group {
+        display: flex;
+        flex-direction: column;
+
+        .price-label {
+          font-size: 0.68rem;
+          color: $text-secondary;
+        }
+
+        .price-amount {
+          font-size: 1.15rem;
+          color: #FFFFFF;
+          font-weight: 800;
+        }
+      }
+
+      .stock-pill {
+        font-size: 0.72rem;
+        color: $color-success;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.25);
+        padding: 0.2rem 0.5rem;
+        border-radius: $radius-full;
+      }
+    }
+
+    .product-card-actions {
+      display: flex;
+      gap: 0.5rem;
+
+      .flex-1 { flex: 1; }
+
+      .quote-add-btn {
+        padding: 0.75rem;
+        color: $color-accent;
+        border-color: rgba(0, 180, 216, 0.3);
+        &:hover {
+          background: rgba(0, 229, 255, 0.15);
+          border-color: $color-accent;
+        }
+      }
+    }
+  }
+}
+
+// Technical Specs Modal
+.product-spec-modal {
+  max-width: 600px;
+
+  .spec-modal-header {
+    margin-bottom: 1.5rem;
+
+    .brand-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: $color-accent;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: #FFFFFF;
+      margin: 0.2rem 0 0.5rem 0;
+    }
+
+    .modal-price {
+      font-size: 1.3rem;
+      color: $color-accent;
+    }
+  }
+
+  .spec-modal-body {
+    .spec-modal-img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-radius: $radius-md;
+      margin-bottom: 1.25rem;
+    }
+
+    .modal-full-desc {
+      font-size: 0.9rem;
+      color: $text-secondary;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    h4 {
+      font-size: 0.95rem;
+      color: #FFFFFF;
+      margin-bottom: 0.75rem;
+    }
+
+    .full-specs-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+
+      li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: $text-primary;
+
+        .spec-check-icon {
+          color: $color-accent;
+          margin-top: 2px;
+          flex-shrink: 0;
+        }
+      }
+    }
+
+    .labor-info-pill {
+      background: rgba(0, 112, 243, 0.12);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      padding: 0.6rem 0.9rem;
+      border-radius: $radius-md;
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      span { color: $text-secondary; }
+      strong { color: $color-accent; }
+    }
+  }
+
+  .spec-modal-footer {
+    @include flex-between;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid $border-color;
+  }
+}

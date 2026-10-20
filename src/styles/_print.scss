@@ -1,0 +1,109 @@
+// ==========================================
+// JJ TECH - PRINT & PDF EXPORT STYLESHEET
+// ==========================================
+
+@media print {
+  // Hide interactive and non-printable elements
+  .navbar-header,
+  .footer-main,
+  .whatsapp-floating-wrapper,
+  .cart-drawer-overlay,
+  .modal-overlay,
+  .add-item-form,
+  .delete-item-btn,
+  .summary-actions,
+  .btn,
+  .location-select,
+  .item-qty-controls,
+  .stage-header,
+  .voice-assistant-bar,
+  .console-tablet-frame {
+    display: none !important;
+  }
+
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    font-size: 12pt;
+  }
+
+  .calculator-section {
+    padding: 0 !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .calculator-layout {
+    display: block !important;
+  }
+
+  .calculator-summary, .calculator-controls {
+    background: #FFFFFF !important;
+    border: 1px solid #CCCCCC !important;
+    box-shadow: none !important;
+    color: #000000 !important;
+    padding: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .title, h2, h3, h4 {
+    color: #000000 !important;
+  }
+
+  .highlight {
+    -webkit-text-fill-color: #0070F3 !important;
+    color: #0070F3 !important;
+  }
+
+  .quote-item-row {
+    background: #F8FAFC !important;
+    border: 1px solid #E2E8F0 !important;
+    color: #000000 !important;
+    margin-bottom: 0.5rem;
+  }
+
+  .quote-item-row h4, .quote-item-row strong {
+    color: #000000 !important;
+  }
+
+  .grand-total-box {
+    background: #F1F5F9 !important;
+    border: 2px solid #0070F3 !important;
+    color: #000000 !important;
+
+    .total-number {
+      -webkit-text-fill-color: #0070F3 !important;
+      color: #0070F3 !important;
+    }
+  }
+
+  // Official Print Header
+  .calculator-section::before {
+    content: "JJ TECH - SEGURIDAD | DOMÓTICA | DISEÑO \A Medellín, Colombia • WhatsApp Oficial: +57 302 576 9589 • info@jjtech.com \A DOCUMENTO OFICIAL DE COTIZACIÓN Y PROPUESTA TÉCNICA";
+    white-space: pre-wrap;
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14pt;
+    border-bottom: 2px solid #0070F3;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    color: #000000;
+  }
+
+  // Official Print Footer
+  .calculator-section::after {
+    content: "Validez de la oferta: 15 días calendario. \A El valor de la visita técnica se abona y descuenta al 100% al formalizar el contrato. \A Garantía de 12 a 36 meses en equipos y 12 meses en instalación y calibración. \A Medellín, Antioquia, Colombia.";
+    white-space: pre-wrap;
+    display: block;
+    text-align: center;
+    font-size: 9pt;
+    border-top: 1px solid #CCCCCC;
+    padding-top: 1rem;
+    margin-top: 2rem;
+    color: #666666;
+  }
+}

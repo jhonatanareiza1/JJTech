@@ -1,0 +1,378 @@
+// ==========================================
+// JJ TECH - NAVBAR STYLES (SCSS)
+// ==========================================
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.navbar-header {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  width: 100%;
+}
+
+// Microbar top strip
+.navbar-microbar {
+  background: rgba(6, 9, 17, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.35rem 0;
+  font-size: 0.75rem;
+  color: $text-secondary;
+
+  .microbar-inner {
+    @include flex-between;
+  }
+
+  .microbar-left, .microbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .location-tag {
+    color: $color-accent;
+    font-weight: 500;
+  }
+
+  .highlight-text {
+    display: none;
+    @include sm {
+      display: inline;
+    }
+    strong {
+      color: #E2E8F0;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .divider-dot {
+    color: $text-muted;
+  }
+
+  .microbar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: $text-secondary;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $color-accent;
+    }
+  }
+
+  .admin-access-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: $text-muted;
+    font-size: 0.725rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: $radius-sm;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    &:hover {
+      color: $color-primary-light;
+      border-color: $color-primary-light;
+    }
+  }
+
+  .admin-status-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: $color-accent;
+    background: rgba(0, 229, 255, 0.1);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    padding: 0.15rem 0.6rem;
+    border-radius: $radius-full;
+    font-size: 0.725rem;
+    font-weight: 600;
+  }
+}
+
+// Main Navbar
+.navbar-main {
+  background: rgba(11, 16, 30, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0, 180, 216, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  padding: 0.85rem 0;
+
+  .navbar-container {
+    @include flex-between;
+  }
+}
+
+// Brand Logo
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+
+  .logo-symbol {
+    display: flex;
+    align-items: center;
+    position: relative;
+    font-family: $font-display;
+    font-size: 1.85rem;
+    font-weight: 900;
+    line-height: 1;
+
+    .j-first {
+      background: linear-gradient(180deg, #00E5FF, #0080FF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-right: -4px;
+      filter: drop-shadow(0 0 8px rgba(0, 180, 216, 0.5));
+    }
+
+    .j-second {
+      background: linear-gradient(180deg, #38BDF8, #0056C6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 8px rgba(0, 112, 243, 0.4));
+    }
+  }
+
+  .logo-text-group {
+    display: flex;
+    flex-direction: column;
+
+    .brand-name {
+      font-family: $font-display;
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #FFFFFF;
+      line-height: 1;
+    }
+
+    .brand-tagline {
+      font-size: 0.55rem;
+      font-weight: 600;
+      letter-spacing: 1.8px;
+      color: $text-secondary;
+      margin-top: 3px;
+    }
+  }
+}
+
+// Nav links
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  list-style: none;
+
+  &.desktop-only {
+    display: none;
+    @include lg {
+      display: flex;
+    }
+  }
+
+  .nav-item {
+    position: relative;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: $text-secondary;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+    position: relative;
+
+    &:hover {
+      color: $text-primary;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    &.active {
+      color: #FFFFFF;
+      background: rgba(0, 112, 243, 0.15);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      box-shadow: 0 0 15px rgba(0, 180, 216, 0.2);
+    }
+
+    .nav-badge {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.45rem;
+      background: linear-gradient(135deg, $color-accent, $color-primary);
+      color: #060911;
+      font-weight: 800;
+      border-radius: $radius-full;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+// Navbar actions
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+
+  .action-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-md;
+    @include flex-center;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid $border-color;
+    color: $text-primary;
+
+    &:hover {
+      border-color: $color-accent;
+      color: $color-accent;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: linear-gradient(135deg, $color-accent, $color-primary);
+      color: #060911;
+      font-size: 0.7rem;
+      font-weight: 800;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      @include flex-center;
+      box-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+    }
+  }
+
+  .user-profile-menu {
+    display: flex;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(0, 180, 216, 0.3);
+    border-radius: $radius-md;
+    padding: 0.2rem 0.4rem;
+
+    .user-profile-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.3rem 0.5rem;
+      font-size: 0.85rem;
+      color: $text-primary;
+      font-weight: 600;
+
+      .admin-tag {
+        font-size: 0.62rem;
+        background: #EF4444;
+        color: white;
+        padding: 0.1rem 0.35rem;
+        border-radius: $radius-sm;
+      }
+    }
+
+    .logout-btn {
+      padding: 0.3rem;
+      color: $text-muted;
+      border-radius: 4px;
+      &:hover {
+        color: $color-danger;
+        background: rgba(239, 68, 68, 0.1);
+      }
+    }
+  }
+
+  .mobile-toggle {
+    display: flex;
+    color: $text-primary;
+    padding: 0.4rem;
+    border-radius: $radius-sm;
+    @include lg {
+      display: none;
+    }
+  }
+}
+
+// Mobile menu overlay
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 600;
+  display: flex;
+  justify-content: flex-end;
+
+  .mobile-menu-drawer {
+    width: 82%;
+    max-width: 320px;
+    height: 100%;
+    background: $bg-card-solid;
+    border-left: 1px solid rgba(0, 180, 216, 0.3);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+
+    .mobile-menu-header {
+      @include flex-between;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid $border-color;
+
+      .mobile-menu-title {
+        font-family: $font-display;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: $color-accent;
+      }
+
+      .close-btn {
+        color: $text-secondary;
+      }
+    }
+
+    .mobile-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1;
+
+      .mobile-nav-link {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.85rem 1rem;
+        border-radius: $radius-md;
+        color: $text-secondary;
+        font-size: 1rem;
+        font-weight: 500;
+
+        &:hover, &.active {
+          background: rgba(0, 112, 243, 0.15);
+          color: $color-accent;
+        }
+
+        &.admin {
+          color: #38BDF8;
+          border: 1px dashed rgba(56, 189, 248, 0.4);
+        }
+      }
+    }
+
+    .mobile-menu-footer {
+      padding-top: 1rem;
+      border-top: 1px solid $border-color;
+      .w-full { width: 100%; }
+    }
+  }
+}

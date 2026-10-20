@@ -1,0 +1,74 @@
+// ==========================================
+// JJ TECH - SCSS MIXINS & UTILITIES
+// ==========================================
+@use 'variables' as *;
+
+// Glassmorphism effect
+@mixin glass-panel($blur: 16px, $bg: $bg-glass, $border: $border-color) {
+  background: $bg;
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+  border: 1px solid $border;
+}
+
+// Glowing border effect
+@mixin glow-border($color: $border-glow) {
+  border: 1px solid $color;
+  box-shadow: 0 0 15px rgba($color, 0.25);
+}
+
+// Luxury gradient text
+@mixin text-gradient($start: $color-accent, $end: $color-primary) {
+  background: linear-gradient(135deg, $start, $end);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+// Flex center
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Flex between
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// Responsive breakpoints
+@mixin sm {
+  @media (min-width: $breakpoint-sm) { @content; }
+}
+
+@mixin md {
+  @media (min-width: $breakpoint-md) { @content; }
+}
+
+@mixin lg {
+  @media (min-width: $breakpoint-lg) { @content; }
+}
+
+@mixin xl {
+  @media (min-width: $breakpoint-xl) { @content; }
+}
+
+// Custom Scrollbar
+@mixin custom-scrollbar($width: 6px) {
+  &::-webkit-scrollbar {
+    width: $width;
+    height: $width;
+  }
+  &::-webkit-scrollbar-track {
+    background: rgba(11, 16, 30, 0.6);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 180, 216, 0.4);
+    border-radius: $radius-full;
+    &:hover {
+      background: rgba(0, 229, 255, 0.7);
+    }
+  }
+}
