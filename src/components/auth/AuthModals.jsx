@@ -7,8 +7,8 @@ import {
   User, 
   Lock, 
   Mail, 
+  Phone,
   ShieldCheck, 
-  Sparkles, 
   ArrowRight,
   AlertCircle
 } from 'lucide-react';
@@ -21,10 +21,11 @@ export const ClientAuthModal = ({ isOpen, onClose, onSwitchToAdmin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [city, setCity] = useState(LOCATIONS_ANTIOQUIA[0].city);
   const [error, setError] = useState(null);
 
-  const { loginClient, registerClient, quickDemoLogin, authLoading } = useAuth();
+  const { loginClient, registerClient, authLoading } = useAuth();
 
   if (!isOpen) return null;
 
@@ -36,15 +37,10 @@ export const ClientAuthModal = ({ isOpen, onClose, onSwitchToAdmin }) => {
       if (res.success) onClose();
       else setError(res.error);
     } else {
-      const res = await registerClient(name, email, password, city);
+      const res = await registerClient(name, email, password, phone, city);
       if (res.success) onClose();
       else setError(res.error);
     }
-  };
-
-  const handleDemoClient = () => {
-    quickDemoLogin('client');
-    onClose();
   };
 
   return (
@@ -58,25 +54,27 @@ export const ClientAuthModal = ({ isOpen, onClose, onSwitchToAdmin }) => {
           <div className="auth-brand-glyph">
             <span>JJ</span>
           </div>
-          <h3>{tab === 'login' ? 'Bienvenido a JJ Tech' : 'Crea tu Cuenta de Cliente'}</h3>
+          <h3>{tab === 'login' ? 'Iniciar Sesión en JJ Tech' : 'Crea tu Cuenta de Usuario'}</h3>
           <p>
             {tab === 'login' 
-              ? 'Accede para guardar cotizaciones y gestionar tus citas.' 
-              : 'Regístrate para guardar cotizaciones y recibir soporte en Medellín.'}
+              ? 'Ingresa tu correo y contraseña para acceder a tus cotizaciones y servicios.' 
+              : 'Regístrate con tus datos para guardar cotizaciones y programar instalaciones en Antioquia.'}
           </p>
         </div>
 
         {/* Tab switcher */}
         <div className="auth-tab-switch">
           <button 
+            type="button"
             className={`switch-tab ${tab === 'login' ? 'active' : ''}`}
-            onClick={() => setTab('login')}
+            onClick={() => { setTab('login'); setError(null); }}
           >
             Iniciar Sesión
           </button>
           <button 
+            type="button"
             className={`switch-tab ${tab === 'register' ? 'active' : ''}`}
-            onClick={() => setTab('register')}
+            onClick={() => { setTab('register'); setError(null); }}
           >
             Crear Cuenta
           </button>
@@ -107,7 +105,21 @@ export const ClientAuthModal = ({ isOpen, onClose, onSwitchToAdmin }) => {
               </div>
 
               <div className="form-group">
-                <label>Ciudad / Municipio en Antioquia *</label>
+                <label>Teléfono / WhatsApp *</label>
+                <div className="input-with-icon">
+                  <Phone size={16} className="field-icon" />
+                  <input 
+                    type="tel" 
+                    required 
+                    placeholder="Ej. 302 576 9589"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Municipio en Antioquia *</label>
                 <select value={city} onChange={(e) => setCity(e.target.value)}>
                   {LOCATIONS_ANTIOQUIA.map((l) => (
                     <option key={l.id} value={l.city}>{l.city}</option>
@@ -124,7 +136,7 @@ export const ClientAuthModal = ({ isOpen, onClose, onSwitchToAdmin }) => {
               <input 
                 type="email" 
                 required 
-                placeholder="cliente@ejemplo.com"
+                placeholder="tu.correo@ejemplo.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -138,7 +150,7 @@ export const ClientAuthModal = ({ isOpen, onClose, onSwitchToAdmin }) => {
               <input 
                 type="password" 
                 required 
-                placeholder="••••••••"
+                placeholder="Ingresa tu clave de seguridad"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -146,22 +158,14 @@ export const ClientAuthModal = ({ isOpen, onClose, onSwitchToAdmin }) => {
           </div>
 
           <button type="submit" className="btn btn-primary w-full" disabled={authLoading}>
-            <span>{tab === 'login' ? 'Entrar a Mi Cuenta' : 'Registrarme'}</span>
+            <span>{tab === 'login' ? 'Entrar a Mi Cuenta' : 'Crear Mi Cuenta'}</span>
             <ArrowRight size={16} />
           </button>
         </form>
 
-        <div className="auth-demo-shortcut">
-          <span className="divider-text">o prueba con un clic</span>
-          <button className="btn btn-outline w-full demo-client-btn" onClick={handleDemoClient}>
-            <Sparkles size={16} />
-            <span>Acceso Instantáneo como Cliente Demo</span>
-          </button>
-        </div>
-
         <div className="auth-switch-to-admin">
-          <span>¿Eres del equipo técnico o gerencia?</span>
-          <button onClick={() => { onClose(); onSwitchToAdmin(); }}>
+          <span>¿Equipo técnico o gerencial de JJ Tech?</span>
+          <button type="button" onClick={() => { onClose(); onSwitchToAdmin(); }}>
             Acceso Administrativo
           </button>
         </div>
@@ -171,8 +175,8 @@ export const ClientAuthModal = ({ isOpen, onClose, onSwitchToAdmin }) => {
 };
 
 export const AdminLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
-  const [email, setEmail] = useState('admin@jjtech.com');
-  const [password, setPassword] = useState('admin');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
   const { loginAdmin, authLoading } = useAuth();
@@ -188,14 +192,6 @@ export const AdminLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
       if (onLoginSuccess) onLoginSuccess();
     } else {
       setError(res.error);
-    }
-  };
-
-  const handleFastAdminLogin = async () => {
-    const res = await loginAdmin('admin@jjtech.com', 'admin');
-    if (res.success) {
-      onClose();
-      if (onLoginSuccess) onLoginSuccess();
     }
   };
 
@@ -229,6 +225,7 @@ export const AdminLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
               <input 
                 type="email" 
                 required 
+                placeholder="correo@jjtech.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -242,6 +239,7 @@ export const AdminLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
               <input 
                 type="password" 
                 required 
+                placeholder="Ingresa tu clave de acceso"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -253,13 +251,6 @@ export const AdminLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             <span>Ingresar a la Consola</span>
           </button>
         </form>
-
-        <div className="quick-admin-login-bar">
-          <button className="btn btn-outline w-full fast-admin-btn" onClick={handleFastAdminLogin}>
-            <Sparkles size={16} />
-            <span>Ingresar con 1 Clic (Credenciales Demo admin/admin)</span>
-          </button>
-        </div>
       </div>
     </div>
   );

@@ -7,7 +7,11 @@
 .auth-modal-box, .admin-auth-box {
   max-width: 440px;
   position: relative;
-  padding: 2.2rem;
+  padding: 1.5rem 1.15rem;
+
+  @include sm {
+    padding: 2.2rem;
+  }
 
   .auth-close-btn {
     position: absolute;

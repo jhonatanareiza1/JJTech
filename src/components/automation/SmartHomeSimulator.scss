@@ -81,9 +81,13 @@
 
   .room-viewport {
     position: relative;
-    height: 380px;
+    height: 250px;
     overflow: hidden;
     background: #000;
+
+    @include sm {
+      height: 340px;
+    }
 
     @include md {
       height: 440px;

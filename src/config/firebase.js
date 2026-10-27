@@ -6,7 +6,8 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage, ref, uploadString, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-const rawApiKey = import.meta.env.VITE_FIREBASE_API_KEY || "";
+const REAL_FIREBASE_KEY = "AIzaSyAOITcRpTfJiLTw6NmqdcJypUKudIa8cFE";
+const rawApiKey = import.meta.env.VITE_FIREBASE_API_KEY || REAL_FIREBASE_KEY;
 const isConfigured = Boolean(
   rawApiKey &&
   rawApiKey.trim() !== "" &&
@@ -15,7 +16,7 @@ const isConfigured = Boolean(
 );
 
 const firebaseConfig = {
-  apiKey: rawApiKey || "AIzaSyDummyKeyJJTechForLocalDevelopment1234",
+  apiKey: rawApiKey,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "jjtech-a3ab0.firebaseapp.com",
   databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://jjtech-a3ab0-default-rtdb.firebaseio.com",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "jjtech-a3ab0",

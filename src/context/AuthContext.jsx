@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
         setAuthLoading(false);
         return { success: true, user };
       } else {
-        throw new Error("Credenciales de Administrador incorrectas. Usa admin@jjtech.com / admin");
+        throw new Error("Credenciales de Administrador incorrectas. Verifique correo y clave.");
       }
     } catch (err) {
       setAuthError(err.message);
@@ -101,7 +101,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Register Client
-  const registerClient = async (name, email, password, city = "Medellín") => {
+  const registerClient = async (name, email, password, phone = "", city = "Medellín") => {
     setAuthLoading(true);
     setAuthError(null);
     try {
@@ -109,10 +109,23 @@ export const AuthProvider = ({ children }) => {
         uid: `client-${Date.now()}`,
         displayName: name,
         email: email,
+        phone: phone,
         city: city,
         role: "client",
         registeredAt: new Date().toISOString()
       };
+
+      if (isFirebaseConnected && auth) {
+        try {
+          const cred = await createUserWithEmailAndPassword(auth, email, password);
+          if (cred && cred.user) {
+            user.uid = cred.user.uid;
+          }
+        } catch (fbErr) {
+          console.warn("Firebase Auth registration note:", fbErr.message);
+        }
+      }
+
       setCurrentUser(user);
       setAuthLoading(false);
       return { success: true, user };

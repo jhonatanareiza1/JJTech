@@ -132,18 +132,23 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenAuthModal, onOpenAdminMo
                   onClick={() => isAdmin ? setActiveTab('admin') : setActiveTab('perfil')}
                   title={`Conectado como ${currentUser.displayName || currentUser.email}`}
                 >
-                  <User size={18} />
+                  <User size={16} />
                   <span className="user-name">{currentUser.displayName?.split(' ')[0] || 'Mi Cuenta'}</span>
                   {isAdmin && <span className="admin-tag">ADMIN</span>}
                 </button>
                 <button onClick={logout} className="logout-btn" title="Cerrar Sesión">
-                  <X size={15} />
+                  <X size={14} />
                 </button>
               </div>
             ) : (
-              <button className="btn btn-outline btn-sm login-trigger" onClick={onOpenAuthModal}>
-                <User size={16} />
-                <span>Ingresar</span>
+              <button 
+                className="login-trigger-pill" 
+                onClick={onOpenAuthModal}
+                title="Iniciar Sesión o Crear Cuenta"
+              >
+                <User size={15} />
+                <span className="login-short-text">Ingresar</span>
+                <span className="login-full-text">Iniciar Sesión / Registro</span>
               </button>
             )}
 
@@ -169,6 +174,39 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenAuthModal, onOpenAdminMo
                 <X size={20} />
               </button>
             </div>
+
+            {/* Mobile Account Quick Status Banner */}
+            <div className="mobile-drawer-auth-card">
+              {currentUser ? (
+                <div className="drawer-user-info">
+                  <div className="avatar-circle">
+                    <User size={16} />
+                  </div>
+                  <div className="user-details">
+                    <span className="user-name-title">{currentUser.displayName || currentUser.email}</span>
+                    <span className="user-role-label">{isAdmin ? 'Administrador JJ Tech' : 'Cliente Registrado'}</span>
+                  </div>
+                  <button onClick={logout} className="drawer-logout-btn" title="Cerrar Sesión">
+                    <X size={15} />
+                  </button>
+                </div>
+              ) : (
+                <button 
+                  className="drawer-auth-btn"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    onOpenAuthModal();
+                  }}
+                >
+                  <User size={16} />
+                  <div className="auth-btn-text">
+                    <strong>Iniciar Sesión o Crear Cuenta</strong>
+                    <small>Accede a tus cotizaciones y compras</small>
+                  </div>
+                </button>
+              )}
+            </div>
+
             <ul className="mobile-nav-list">
               {navLinks.map((link) => {
                 const Icon = link.icon;

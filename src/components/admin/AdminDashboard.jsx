@@ -104,10 +104,6 @@ export const AdminDashboard = ({ onOpenAdminLogin }) => {
             <p>
               El Moodboard Financiero, la analítica gerencial y la gestión de inventario están restringidos para el equipo de ingeniería y administración de JJ Tech.
             </p>
-            <div className="lock-credentials-hint">
-              <span>Credenciales Demo de Administrador:</span>
-              <code>Usuario: admin@jjtech.com / Clave: admin</code>
-            </div>
             <button className="btn btn-accent btn-lg" onClick={onOpenAdminLogin}>
               Ingresar al Panel Administrativo
             </button>
