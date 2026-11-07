@@ -23,6 +23,7 @@ export const ClientAuthModal = ({ isOpen, onClose, onSwitchToAdmin }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState(LOCATIONS_ANTIOQUIA[0].city);
+  const [adminKey, setAdminKey] = useState('');
   const [error, setError] = useState(null);
 
   const { loginClient, registerClient, authLoading } = useAuth();
@@ -37,7 +38,7 @@ export const ClientAuthModal = ({ isOpen, onClose, onSwitchToAdmin }) => {
       if (res.success) onClose();
       else setError(res.error);
     } else {
-      const res = await registerClient(name, email, password, phone, city);
+      const res = await registerClient(name, email, password, phone, city, adminKey);
       if (res.success) onClose();
       else setError(res.error);
     }
@@ -126,6 +127,25 @@ export const ClientAuthModal = ({ isOpen, onClose, onSwitchToAdmin }) => {
                   ))}
                 </select>
               </div>
+
+              <div className="form-group admin-key-field">
+                <label className="admin-key-label">
+                  <span>¿Eres el Dueño o Administrador de JJ Tech?</span>
+                  <small className="optional-badge">(Opcional)</small>
+                </label>
+                <div className="input-with-icon">
+                  <ShieldCheck size={16} className="field-icon icon-cyan" />
+                  <input 
+                    type="password" 
+                    placeholder="Ingresa la llave maestra (ej. JJTECH2026)"
+                    value={adminKey}
+                    onChange={(e) => setAdminKey(e.target.value)}
+                  />
+                </div>
+                <small className="hint-admin-key">
+                  Si eres el propietario de la página, ingresa <strong>JJTECH2026</strong> para que tu cuenta quede con permisos de <strong>Administrador Total</strong>.
+                </small>
+              </div>
             </>
           )}
 
@@ -207,7 +227,7 @@ export const AdminLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             <ShieldCheck size={32} />
           </div>
           <h3>Acceso Administrativo</h3>
-          <p>Consola de Moodboard Financiero e Inventarios JJ Tech</p>
+          <p>Ingresa con tu correo personal (si ya tienes rol de Administrador) o con las credenciales maestras de JJ Tech.</p>
         </div>
 
         {error && (

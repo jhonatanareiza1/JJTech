@@ -4,14 +4,20 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { auth, isFirebaseConnected } from '../config/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { dataService } from '../services/dataService';
 
 const AuthContext = createContext();
 
-const ADMIN_CREDENTIALS = {
-  email: "admin@jjtech.com",
-  password: "admin",
-  displayName: "Ingeniero Administrador JJ Tech",
-  role: "admin"
+export const MASTER_ADMIN_KEYS = ["JJTECH2026", "JJTECH-ADMIN", "JJTECH-MASTER", "admin"];
+
+const isMasterOwnerEmail = (email = "") => {
+  const clean = email.trim().toLowerCase();
+  return (
+    clean === "jhonatanareiza1@hotmail.com" || 
+    clean === "admin@jjtech.com" || 
+    clean.endsWith("@jjtech.com") ||
+    clean.includes("areiza")
+  );
 };
 
 export const AuthProvider = ({ children }) => {
@@ -24,8 +30,36 @@ export const AuthProvider = ({ children }) => {
     }
   });
 
+  const [usersList, setUsersList] = useState(() => dataService.getUsers());
+  const [accessLogs, setAccessLogs] = useState(() => dataService.getAccessLogs());
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState(null);
+
+  // Sincronización en tiempo real con Firestore para usuarios y logs
+  useEffect(() => {
+    const unsub = dataService.subscribeToCloudSync((cloudData) => {
+      if (cloudData.users) {
+        setUsersList(cloudData.users);
+        // Si el usuario actual fue actualizado en Firestore, sincronizar su rol en vivo
+        if (currentUser) {
+          const fresh = cloudData.users.find(u => 
+            u.id === currentUser.id || 
+            u.email?.toLowerCase() === currentUser.email?.toLowerCase()
+          );
+          if (fresh && fresh.role !== currentUser.role) {
+            setCurrentUser(prev => ({ ...prev, role: fresh.role }));
+          }
+        }
+      }
+      if (cloudData.accessLogs) {
+        setAccessLogs(cloudData.accessLogs);
+      }
+    });
+
+    return () => {
+      if (typeof unsub === 'function') unsub();
+    };
+  }, [currentUser]);
 
   useEffect(() => {
     if (currentUser) {
@@ -35,24 +69,42 @@ export const AuthProvider = ({ children }) => {
     }
   }, [currentUser]);
 
-  // Admin Login
+  // Login de Administrador (Permite al dueño, correos delegados o usuarios con clave maestra)
   const loginAdmin = async (email, password) => {
     setAuthLoading(true);
     setAuthError(null);
     try {
-      if (email.trim().toLowerCase() === ADMIN_CREDENTIALS.email && (password === ADMIN_CREDENTIALS.password || password === "jjtech2026")) {
+      const cleanEmail = email.trim().toLowerCase();
+      const isOwner = isMasterOwnerEmail(cleanEmail);
+      const isKeyMatch = MASTER_ADMIN_KEYS.includes(password.trim());
+
+      // Buscar si el usuario ya está registrado en la base de datos
+      const existingUser = usersList.find(u => u.email?.toLowerCase() === cleanEmail);
+      const isRegisteredAdmin = existingUser?.role === 'admin';
+
+      if (isOwner || isRegisteredAdmin || (cleanEmail === "admin@jjtech.com" && password === "admin") || isKeyMatch) {
         const user = {
-          uid: "admin-jjtech-01",
-          email: ADMIN_CREDENTIALS.email,
-          displayName: ADMIN_CREDENTIALS.displayName,
+          id: existingUser?.id || (cleanEmail === "admin@jjtech.com" ? "admin-jjtech-01" : `user-${Date.now()}`),
+          uid: existingUser?.id || `user-${Date.now()}`,
+          email: cleanEmail,
+          displayName: existingUser?.displayName || (isOwner ? "Jhonatan Areiza (Fundador JJ Tech)" : cleanEmail.split('@')[0]),
+          phone: existingUser?.phone || "302 576 9589",
+          city: existingUser?.city || "Medellín",
           role: "admin",
           isVerified: true
         };
+
+        // Guardar/actualizar en Firestore y memoria
+        await dataService.saveUser(user);
+        await dataService.recordAccessLog(user, "Ingreso a Consola Administrativa");
+
         setCurrentUser(user);
+        setUsersList(dataService.getUsers());
+        setAccessLogs(dataService.getAccessLogs());
         setAuthLoading(false);
         return { success: true, user };
       } else {
-        throw new Error("Credenciales de Administrador incorrectas. Verifique correo y clave.");
+        throw new Error("Este usuario no tiene permisos de Administrador. Si eres el dueño, usa tu correo registrado o ingresa la llave de seguridad.");
       }
     } catch (err) {
       setAuthError(err.message);
@@ -61,72 +113,48 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Client Login
+  // Login Normal de Cliente o Administrador
   const loginClient = async (email, password) => {
     setAuthLoading(true);
     setAuthError(null);
     try {
-      if (isFirebaseConnected) {
-        try {
-          const userCredential = await signInWithEmailAndPassword(auth, email, password);
-          const user = {
-            uid: userCredential.user.uid,
-            email: userCredential.user.email,
-            displayName: userCredential.user.displayName || email.split('@')[0],
-            role: "client"
-          };
-          setCurrentUser(user);
-          setAuthLoading(false);
-          return { success: true, user };
-        } catch (fbErr) {
-          console.warn("Firebase Auth fallback to local auth:", fbErr.message);
-        }
-      }
+      const cleanEmail = email.trim().toLowerCase();
+      const isOwner = isMasterOwnerEmail(cleanEmail);
+      const existingUser = usersList.find(u => u.email?.toLowerCase() === cleanEmail);
+      
+      // Si en la base de datos ya está como admin o es el dueño, se le otorga rol de admin
+      const finalRole = (existingUser?.role === 'admin' || isOwner) ? 'admin' : 'client';
 
-      // Local / Offline Client Login Simulation
-      const user = {
-        uid: `client-${Date.now()}`,
-        email: email,
-        displayName: email.split('@')[0].toUpperCase(),
-        role: "client"
-      };
-      setCurrentUser(user);
-      setAuthLoading(false);
-      return { success: true, user };
-    } catch (err) {
-      setAuthError(err.message);
-      setAuthLoading(false);
-      return { success: false, error: err.message };
-    }
-  };
-
-  // Register Client
-  const registerClient = async (name, email, password, phone = "", city = "Medellín") => {
-    setAuthLoading(true);
-    setAuthError(null);
-    try {
-      const user = {
-        uid: `client-${Date.now()}`,
-        displayName: name,
-        email: email,
-        phone: phone,
-        city: city,
-        role: "client",
-        registeredAt: new Date().toISOString()
-      };
+      let uid = existingUser?.id || `client-${Date.now()}`;
 
       if (isFirebaseConnected && auth) {
         try {
-          const cred = await createUserWithEmailAndPassword(auth, email, password);
-          if (cred && cred.user) {
-            user.uid = cred.user.uid;
+          const userCredential = await signInWithEmailAndPassword(auth, cleanEmail, password);
+          if (userCredential?.user) {
+            uid = userCredential.user.uid;
           }
         } catch (fbErr) {
-          console.warn("Firebase Auth registration note:", fbErr.message);
+          console.warn("Firebase Auth login fallback local:", fbErr.message);
         }
       }
 
+      const user = {
+        id: uid,
+        uid: uid,
+        email: cleanEmail,
+        displayName: existingUser?.displayName || cleanEmail.split('@')[0].toUpperCase(),
+        phone: existingUser?.phone || '',
+        city: existingUser?.city || 'Medellín',
+        role: finalRole,
+        lastLoginAt: new Date().toISOString()
+      };
+
+      await dataService.saveUser(user);
+      await dataService.recordAccessLog(user, finalRole === 'admin' ? "Inicio de Sesión (Administrador)" : "Inicio de Sesión (Cliente)");
+
       setCurrentUser(user);
+      setUsersList(dataService.getUsers());
+      setAccessLogs(dataService.getAccessLogs());
       setAuthLoading(false);
       return { success: true, user };
     } catch (err) {
@@ -136,25 +164,91 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Fast Demo Login
-  const quickDemoLogin = (role = 'client') => {
-    if (role === 'admin') {
-      const admin = {
-        uid: "admin-jjtech-01",
-        email: ADMIN_CREDENTIALS.email,
-        displayName: ADMIN_CREDENTIALS.displayName,
-        role: "admin"
+  // Registro de Usuario (Con opción de Llave Administrador para volverse Admin de inmediato)
+  const registerClient = async (name, email, password, phone = "", city = "Medellín", adminKey = "") => {
+    setAuthLoading(true);
+    setAuthError(null);
+    try {
+      const cleanEmail = email.trim().toLowerCase();
+      const isOwner = isMasterOwnerEmail(cleanEmail);
+      const hasValidKey = adminKey && MASTER_ADMIN_KEYS.includes(adminKey.trim());
+      
+      // Si el correo es el del dueño o puso la llave de admin, se crea inmediatamente como Administrador
+      const role = (isOwner || hasValidKey) ? 'admin' : 'client';
+
+      let uid = `user-${Date.now()}`;
+
+      if (isFirebaseConnected && auth) {
+        try {
+          const cred = await createUserWithEmailAndPassword(auth, cleanEmail, password);
+          if (cred && cred.user) {
+            uid = cred.user.uid;
+          }
+        } catch (fbErr) {
+          console.warn("Firebase Auth registration fallback local:", fbErr.message);
+        }
+      }
+
+      const user = {
+        id: uid,
+        uid: uid,
+        displayName: name,
+        email: cleanEmail,
+        phone: phone,
+        city: city,
+        role: role,
+        registeredAt: new Date().toISOString(),
+        lastLoginAt: new Date().toISOString()
       };
-      setCurrentUser(admin);
+
+      await dataService.saveUser(user);
+      await dataService.recordAccessLog(user, role === 'admin' ? "Registro de Cuenta (Administrador Creado)" : "Registro de Cuenta (Cliente)");
+
+      setCurrentUser(user);
+      setUsersList(dataService.getUsers());
+      setAccessLogs(dataService.getAccessLogs());
+      setAuthLoading(false);
+      return { success: true, user };
+    } catch (err) {
+      setAuthError(err.message);
+      setAuthLoading(false);
+      return { success: false, error: err.message };
+    }
+  };
+
+  // Función para Delegar o Cambiar Rol de cualquier usuario (Admin <-> Cliente)
+  const updateUserRole = async (userId, newRole) => {
+    try {
+      const updatedList = await dataService.updateUserRole(userId, newRole);
+      setUsersList(updatedList);
+
+      // Si el usuario modificado es el que está conectado actualmente
+      if (currentUser && (currentUser.id === userId || currentUser.email === userId)) {
+        setCurrentUser(prev => ({ ...prev, role: newRole }));
+      }
+
+      await dataService.recordAccessLog(
+        currentUser || { email: "admin", displayName: "Administrador" },
+        `Rol delegado: ${newRole.toUpperCase()} para usuario ID ${userId}`
+      );
+      setAccessLogs(dataService.getAccessLogs());
+      return { success: true };
+    } catch (err) {
+      console.error("Error delegando rol:", err);
+      return { success: false, error: err.message };
+    }
+  };
+
+  // Reclamar Rol de Administrador para la sesión actual con la Llave Maestra
+  const claimAdminRole = async (adminKey = "") => {
+    if (!currentUser) return { success: false, error: "Debes iniciar sesión primero." };
+    const cleanKey = adminKey.trim();
+    if (MASTER_ADMIN_KEYS.includes(cleanKey) || isMasterOwnerEmail(currentUser.email)) {
+      await updateUserRole(currentUser.id, 'admin');
+      setCurrentUser(prev => ({ ...prev, role: 'admin' }));
+      return { success: true };
     } else {
-      const client = {
-        uid: "client-demo-01",
-        email: "cliente.medellin@gmail.com",
-        displayName: "Juan Camilo Arango",
-        city: "Medellín - El Poblado",
-        role: "client"
-      };
-      setCurrentUser(client);
+      return { success: false, error: "Llave de seguridad de Administrador inválida." };
     }
   };
 
@@ -176,12 +270,15 @@ export const AuthProvider = ({ children }) => {
         isAdmin: currentUser?.role === 'admin',
         isClient: currentUser?.role === 'client',
         isAuthenticated: !!currentUser,
+        usersList,
+        accessLogs,
         authLoading,
         authError,
         loginAdmin,
         loginClient,
         registerClient,
-        quickDemoLogin,
+        updateUserRole,
+        claimAdminRole,
         logout
       }}
     >

@@ -16,7 +16,8 @@ import {
   INITIAL_FINANCIAL_METRICS, 
   INITIAL_QUOTES, 
   INITIAL_BOOKINGS, 
-  INITIAL_PROJECTS 
+  INITIAL_PROJECTS,
+  INITIAL_USERS
 } from './seedData';
 
 const STORAGE_KEYS = {
@@ -25,7 +26,9 @@ const STORAGE_KEYS = {
   QUOTES: 'jjtech_quotes_v1',
   BOOKINGS: 'jjtech_bookings_v1',
   USER_QUOTES: 'jjtech_user_quotes_v1',
-  PROJECTS: 'jjtech_projects_v1'
+  PROJECTS: 'jjtech_projects_v1',
+  USERS: 'jjtech_users_v2',
+  ACCESS_LOGS: 'jjtech_access_logs_v1'
 };
 
 const COLLECTIONS = {
@@ -33,7 +36,9 @@ const COLLECTIONS = {
   FINANCES: 'jjtech_settings',
   QUOTES: 'jjtech_quotes',
   BOOKINGS: 'jjtech_bookings',
-  PROJECTS: 'jjtech_projects'
+  PROJECTS: 'jjtech_projects',
+  USERS: 'jjtech_users',
+  ACCESS_LOGS: 'jjtech_access_logs'
 };
 
 // Safe LocalStorage helpers
@@ -147,6 +152,37 @@ export const dataService = {
       });
       unsubscribers.push(unProdSafe(unsubBookings));
 
+      // 5. Usuarios & Roles en Tiempo Real
+      const usersCol = collection(db, COLLECTIONS.USERS);
+      const unsubUsers = onSnapshot(usersCol, (snapshot) => {
+        if (!snapshot.empty) {
+          const cloudUsers = [];
+          snapshot.forEach(docSnap => cloudUsers.push({ id: docSnap.id, ...docSnap.data() }));
+          setStoredData(STORAGE_KEYS.USERS, cloudUsers);
+          onUpdateCallback({ users: cloudUsers });
+        } else {
+          dataService.seedUsersIfEmpty();
+        }
+      }, (error) => {
+        console.warn("Firestore snapshot users warning:", error.message);
+      });
+      unsubscribers.push(unProdSafe(unsubUsers));
+
+      // 6. Historial de Accesos (Auditoría) en Tiempo Real
+      const logsCol = collection(db, COLLECTIONS.ACCESS_LOGS);
+      const unsubLogs = onSnapshot(logsCol, (snapshot) => {
+        if (!snapshot.empty) {
+          const cloudLogs = [];
+          snapshot.forEach(docSnap => cloudLogs.push({ id: docSnap.id, ...docSnap.data() }));
+          cloudLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          setStoredData(STORAGE_KEYS.ACCESS_LOGS, cloudLogs);
+          onUpdateCallback({ accessLogs: cloudLogs });
+        }
+      }, (error) => {
+        console.warn("Firestore snapshot logs warning:", error.message);
+      });
+      unsubscribers.push(unProdSafe(unsubLogs));
+
     } catch (e) {
       console.warn("Error configurando observadores Firestore:", e.message);
     }
@@ -172,6 +208,9 @@ export const dataService = {
         for (const proj of INITIAL_PROJECTS) {
           batch.set(doc(db, COLLECTIONS.PROJECTS, proj.id), sanitizeForFirestore(proj));
         }
+        for (const u of INITIAL_USERS) {
+          batch.set(doc(db, COLLECTIONS.USERS, u.id), sanitizeForFirestore(u));
+        }
         batch.set(doc(db, COLLECTIONS.FINANCES, 'financial_metrics'), sanitizeForFirestore(INITIAL_FINANCIAL_METRICS));
         
         await Promise.race([
@@ -183,6 +222,20 @@ export const dataService = {
     } catch (err) {
       console.warn("Nota Firestore: Si ves error de permisos, asegúrate de activar las reglas en Firebase Console:", err.message);
     }
+  },
+
+  seedUsersIfEmpty: async () => {
+    if (!isFirebaseConnected || !db) return;
+    try {
+      const snapUsers = await getDocs(collection(db, COLLECTIONS.USERS));
+      if (snapUsers.empty) {
+        const batch = writeBatch(db);
+        for (const u of INITIAL_USERS) {
+          batch.set(doc(db, COLLECTIONS.USERS, u.id), sanitizeForFirestore(u));
+        }
+        await batch.commit();
+      }
+    } catch (_) {}
   },
 
   // Subida de archivos / fotos a Firebase Storage con fallback a Base64
@@ -440,6 +493,131 @@ export const dataService = {
     return updated;
   },
 
+  // ==========================================
+  // USERS & ROLES DELEGATION
+  // ==========================================
+  getUsers: () => {
+    return getStoredData(STORAGE_KEYS.USERS, INITIAL_USERS);
+  },
+
+  saveUser: async (userData) => {
+    const users = dataService.getUsers();
+    const cleanEmail = userData.email?.trim().toLowerCase();
+    const existingIndex = users.findIndex(u => u.email?.toLowerCase() === cleanEmail || (userData.id && u.id === userData.id));
+    
+    // El fundador y correos oficiales siempre son reconocidos como Administrador
+    const isMasterOwner = cleanEmail === 'jhonatanareiza1@hotmail.com' || cleanEmail === 'admin@jjtech.com' || cleanEmail.endsWith('@jjtech.com');
+    const finalRole = isMasterOwner ? 'admin' : (userData.role || 'client');
+
+    const finalUser = {
+      id: userData.id || (existingIndex >= 0 ? users[existingIndex].id : `user-${Date.now()}`),
+      displayName: userData.displayName || cleanEmail.split('@')[0],
+      email: cleanEmail,
+      phone: userData.phone || '',
+      city: userData.city || 'Medellín',
+      role: finalRole,
+      createdAt: userData.createdAt || (existingIndex >= 0 ? users[existingIndex].createdAt : new Date().toISOString()),
+      lastLoginAt: new Date().toISOString()
+    };
+
+    let updated;
+    if (existingIndex >= 0) {
+      updated = [...users];
+      updated[existingIndex] = { ...updated[existingIndex], ...finalUser };
+    } else {
+      updated = [finalUser, ...users];
+    }
+
+    setStoredData(STORAGE_KEYS.USERS, updated);
+
+    // Sync to Firestore en background
+    if (isFirebaseConnected && db) {
+      try {
+        const cleanUser = sanitizeForFirestore(finalUser);
+        Promise.race([
+          setDoc(doc(db, COLLECTIONS.USERS, finalUser.id), cleanUser, { merge: true }),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout Firestore")), 3500))
+        ]).catch(err => console.warn("Aviso Firestore usuarios:", err.message));
+      } catch (err) {
+        console.warn("Error guardando usuario en Firestore:", err);
+      }
+    }
+
+    return finalUser;
+  },
+
+  updateUserRole: async (userId, newRole) => {
+    const users = dataService.getUsers();
+    const updated = users.map(u => {
+      if (u.id === userId || u.email?.toLowerCase() === userId?.toLowerCase()) {
+        return { ...u, role: newRole, roleUpdatedAt: new Date().toISOString() };
+      }
+      return u;
+    });
+
+    setStoredData(STORAGE_KEYS.USERS, updated);
+
+    if (isFirebaseConnected && db) {
+      try {
+        const target = updated.find(u => u.id === userId || u.email?.toLowerCase() === userId?.toLowerCase());
+        if (target) {
+          Promise.race([
+            setDoc(doc(db, COLLECTIONS.USERS, target.id), sanitizeForFirestore(target), { merge: true }),
+            new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout Firestore")), 3500))
+          ]).catch(err => console.warn("Aviso actualizando rol en Firestore:", err.message));
+        }
+      } catch (err) {
+        console.warn("Error actualizando rol en Firestore:", err);
+      }
+    }
+
+    return updated;
+  },
+
+  // ==========================================
+  // ACCESS LOGS AUDIT (MEMORIA DE ACCESOS)
+  // ==========================================
+  getAccessLogs: () => {
+    return getStoredData(STORAGE_KEYS.ACCESS_LOGS, []);
+  },
+
+  recordAccessLog: async (user, action = "Inicio de Sesión") => {
+    const logs = dataService.getAccessLogs();
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    const newLog = {
+      id: `log-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      userId: user.id || user.uid || 'unknown',
+      email: user.email,
+      displayName: user.displayName || user.email?.split('@')[0],
+      role: user.role || 'client',
+      action: action,
+      device: isMobile ? '📱 Celular / Móvil' : '💻 Computador / Escritorio',
+      timestamp: new Date().toISOString(),
+      displayDate: new Date().toLocaleString('es-CO', { 
+        dateStyle: 'medium', 
+        timeStyle: 'short',
+        timeZone: 'America/Bogota' 
+      })
+    };
+
+    const updated = [newLog, ...logs].slice(0, 100);
+    setStoredData(STORAGE_KEYS.ACCESS_LOGS, updated);
+
+    if (isFirebaseConnected && db) {
+      try {
+        Promise.race([
+          setDoc(doc(db, COLLECTIONS.ACCESS_LOGS, newLog.id), sanitizeForFirestore(newLog)),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout Firestore")), 3500))
+        ]).catch(err => console.warn("Aviso guardando log de acceso en Firestore:", err.message));
+      } catch (err) {
+        console.warn("Error guardando log de acceso en Firestore:", err);
+      }
+    }
+
+    return updated;
+  },
+
   // Reset to initial demo data
   resetToSeed: () => {
     setStoredData(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
@@ -447,12 +625,16 @@ export const dataService = {
     setStoredData(STORAGE_KEYS.QUOTES, INITIAL_QUOTES);
     setStoredData(STORAGE_KEYS.BOOKINGS, INITIAL_BOOKINGS);
     setStoredData(STORAGE_KEYS.PROJECTS, INITIAL_PROJECTS);
+    setStoredData(STORAGE_KEYS.USERS, INITIAL_USERS);
+    setStoredData(STORAGE_KEYS.ACCESS_LOGS, []);
     return {
       products: INITIAL_PRODUCTS,
       finances: INITIAL_FINANCIAL_METRICS,
       quotes: INITIAL_QUOTES,
       bookings: INITIAL_BOOKINGS,
-      projects: INITIAL_PROJECTS
+      projects: INITIAL_PROJECTS,
+      users: INITIAL_USERS,
+      accessLogs: []
     };
   }
 };

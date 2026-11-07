@@ -52,7 +52,15 @@ const PRESET_IMAGES = [
 ];
 
 export const AdminDashboard = ({ onOpenAdminLogin }) => {
-  const { isAdmin, currentUser, logout } = useAuth();
+  const { 
+    isAdmin, 
+    currentUser, 
+    logout,
+    usersList = [],
+    accessLogs = [],
+    updateUserRole,
+    registerClient
+  } = useAuth();
   const { 
     products, 
     finances, 
@@ -69,7 +77,12 @@ export const AdminDashboard = ({ onOpenAdminLogin }) => {
     resetAllData 
   } = useData();
 
-  const [activeAdminTab, setActiveAdminTab] = useState('moodboard'); // 'moodboard', 'inventory', 'projects', 'quotes', 'bookings'
+  const [activeAdminTab, setActiveAdminTab] = useState('moodboard'); // 'moodboard', 'inventory', 'projects', 'quotes', 'bookings', 'users', 'logs'
+  const [userSearchTerm, setUserSearchTerm] = useState('');
+  const [userRoleFilter, setUserRoleFilter] = useState('all');
+  const [isNewUserModalOpen, setIsNewUserModalOpen] = useState(false);
+  const [newUserFeedback, setNewUserFeedback] = useState(null);
+  const [copiedKey, setCopiedKey] = useState(false);
   
   // Firebase Setup Modal State
   const [isFirebaseModalOpen, setIsFirebaseModalOpen] = useState(false);
@@ -306,6 +319,20 @@ export const AdminDashboard = ({ onOpenAdminLogin }) => {
           >
             <Calendar size={18} />
             <span>Agendamientos ({bookings.length})</span>
+          </button>
+          <button 
+            className={`tab-btn ${activeAdminTab === 'users' ? 'active' : ''}`}
+            onClick={() => setActiveAdminTab('users')}
+          >
+            <Users size={18} />
+            <span>Usuarios & Roles ({usersList.length})</span>
+          </button>
+          <button 
+            className={`tab-btn ${activeAdminTab === 'logs' ? 'active' : ''}`}
+            onClick={() => setActiveAdminTab('logs')}
+          >
+            <Key size={18} />
+            <span>Memoria de Accesos ({accessLogs.length})</span>
           </button>
         </div>
 
@@ -794,6 +821,328 @@ export const AdminDashboard = ({ onOpenAdminLogin }) => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* 5. USERS & ROLES DELEGATION MANAGEMENT */}
+        {activeAdminTab === 'users' && (
+          <div className="users-management-container">
+            {/* Master Key Announcement Card */}
+            <div className="master-key-card glass-card">
+              <div className="key-info-left">
+                <div className="key-icon-box">
+                  <Key size={26} className="icon-cyan" />
+                </div>
+                <div>
+                  <h4>Llave Maestra de Seguridad JJ Tech: <code className="master-code">JJTECH2026</code></h4>
+                  <p>
+                    Usa esta llave durante el registro de cuenta o en la sección <strong>Mi Cuenta</strong> para otorgar permisos de Administrador a tu usuario personal en cualquier dispositivo.
+                  </p>
+                </div>
+              </div>
+              <div className="key-actions-right">
+                <button 
+                  type="button"
+                  className="btn btn-outline btn-sm copy-key-btn"
+                  onClick={() => {
+                    navigator.clipboard.writeText('JJTECH2026');
+                    setCopiedKey(true);
+                    setTimeout(() => setCopiedKey(false), 2500);
+                  }}
+                >
+                  {copiedKey ? <Check size={14} /> : <Copy size={14} />}
+                  <span>{copiedKey ? '¡Llave Copiada!' : 'Copiar Llave'}</span>
+                </button>
+                <button 
+                  type="button"
+                  className="btn btn-accent btn-sm"
+                  onClick={() => {
+                    setNewUserFeedback(null);
+                    setIsNewUserModalOpen(true);
+                  }}
+                >
+                  <Plus size={15} />
+                  <span>Crear / Invitar Administrador</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Users Filter & Search Toolbar */}
+            <div className="users-toolbar glass-card">
+              <div className="search-users-box">
+                <input 
+                  type="text" 
+                  placeholder="Buscar usuario por nombre, correo, teléfono o ciudad..."
+                  value={userSearchTerm}
+                  onChange={(e) => setUserSearchTerm(e.target.value)}
+                />
+              </div>
+              <div className="role-filter-pills">
+                <button 
+                  className={`pill-btn ${userRoleFilter === 'all' ? 'active' : ''}`}
+                  onClick={() => setUserRoleFilter('all')}
+                >
+                  Todos ({usersList.length})
+                </button>
+                <button 
+                  className={`pill-btn ${userRoleFilter === 'admin' ? 'active' : ''}`}
+                  onClick={() => setUserRoleFilter('admin')}
+                >
+                  Administradores ({usersList.filter(u => u.role === 'admin').length})
+                </button>
+                <button 
+                  className={`pill-btn ${userRoleFilter === 'client' ? 'active' : ''}`}
+                  onClick={() => setUserRoleFilter('client')}
+                >
+                  Clientes ({usersList.filter(u => u.role !== 'admin').length})
+                </button>
+              </div>
+            </div>
+
+            {/* Users Grid */}
+            <div className="admin-users-grid">
+              {usersList
+                .filter(u => {
+                  const term = userSearchTerm.toLowerCase();
+                  const matchesTerm = 
+                    (u.displayName || '').toLowerCase().includes(term) ||
+                    (u.email || '').toLowerCase().includes(term) ||
+                    (u.phone || '').includes(term) ||
+                    (u.city || '').toLowerCase().includes(term);
+                  const matchesRole = userRoleFilter === 'all' ? true : (u.role || 'client') === userRoleFilter;
+                  return matchesTerm && matchesRole;
+                })
+                .map((u) => {
+                  const isCurrent = currentUser?.id === u.id || currentUser?.email?.toLowerCase() === u.email?.toLowerCase();
+                  const isOwner = u.email?.toLowerCase() === 'jhonatanareiza1@hotmail.com' || (u.displayName || '').toLowerCase().includes('areiza');
+                  const isUserAdmin = u.role === 'admin';
+
+                  return (
+                    <div key={u.id || u.email} className="admin-user-card glass-card">
+                      <div className="user-card-header">
+                        <div className="user-avatar-circle">
+                          <span>{(u.displayName || u.email || 'U').charAt(0).toUpperCase()}</span>
+                        </div>
+                        <div className="user-titles">
+                          <div className="name-and-tag">
+                            <h4>{u.displayName || u.email?.split('@')[0]}</h4>
+                            {isOwner && <span className="founder-badge">FUNDADOR</span>}
+                            {isCurrent && <span className="current-badge">TÚ</span>}
+                          </div>
+                          <span className="user-email-text">{u.email}</span>
+                        </div>
+                        <div className="role-tag-container">
+                          <span className={`role-badge ${isUserAdmin ? 'badge-admin' : 'badge-client'}`}>
+                            {isUserAdmin ? '🛡️ ADMINISTRADOR' : '👤 CLIENTE'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="user-details-grid">
+                        <div className="detail-item">
+                          <span className="detail-label">Teléfono:</span>
+                          <strong>{u.phone || 'No registrado'}</strong>
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label">Municipio:</span>
+                          <strong>{u.city || 'Medellín'}</strong>
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label">Fecha de Registro:</span>
+                          <small>{u.createdAt ? new Date(u.createdAt).toLocaleDateString('es-CO') : 'Inicial'}</small>
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label">Último Acceso:</span>
+                          <small>{u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleDateString('es-CO') : 'Reciente'}</small>
+                        </div>
+                      </div>
+
+                      {/* Role Delegation Action */}
+                      <div className="user-card-actions">
+                        {isOwner ? (
+                          <span className="owner-protected-text">🔒 Cuenta de Propietario Principal (Inmutable)</span>
+                        ) : isUserAdmin ? (
+                          <button 
+                            type="button" 
+                            className="btn btn-outline btn-sm demote-btn"
+                            disabled={isCurrent}
+                            onClick={async () => {
+                              if (window.confirm(`¿Seguro que deseas retirar los permisos de Administrador a ${u.displayName || u.email}? Pasará a ser Cliente.`)) {
+                                await updateUserRole(u.id, 'client');
+                              }
+                            }}
+                          >
+                            <User size={14} />
+                            <span>Cambiar a Rol de Cliente</span>
+                          </button>
+                        ) : (
+                          <button 
+                            type="button" 
+                            className="btn btn-accent btn-sm promote-btn"
+                            onClick={async () => {
+                              if (window.confirm(`¿Deseas otorgar permisos de Administrador a ${u.displayName || u.email}? Podrá ver y editar obras, inventario y finanzas.`)) {
+                                await updateUserRole(u.id, 'admin');
+                              }
+                            }}
+                          >
+                            <ShieldCheck size={14} />
+                            <span>Delegar Permiso de Administrador</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        )}
+
+        {/* 6. MEMORIA & AUDITORÍA DE ACCESOS EN VIVO */}
+        {activeAdminTab === 'logs' && (
+          <div className="access-logs-container">
+            <div className="logs-header-card glass-card">
+              <div className="logs-summary-text">
+                <h3>Memoria y Auditoría de Accesos ({accessLogs.length})</h3>
+                <p>
+                  Registro en tiempo real sincronizado en Google Firestore y memoria local con cada evento de inicio de sesión, cambio de roles y administración de JJ Tech.
+                </p>
+              </div>
+              <div className="logs-stats-pill">
+                <ShieldCheck size={16} className="icon-cyan" />
+                <span>Auditoría Activa 24/7</span>
+              </div>
+            </div>
+
+            {accessLogs.length === 0 ? (
+              <div className="empty-logs glass-card">
+                <Key size={38} />
+                <h4>No hay registros de acceso aún</h4>
+                <p>Cada vez que alguien inicie sesión o se registre en la plataforma, aparecerá aquí automáticamente.</p>
+              </div>
+            ) : (
+              <div className="logs-stream-list glass-card">
+                {accessLogs.map((log) => {
+                  const isAdminLog = log.role === 'admin' || (log.action || '').toLowerCase().includes('admin');
+                  return (
+                    <div key={log.id} className="log-row-item">
+                      <div className="log-icon-col">
+                        <div className={`log-indicator ${isAdminLog ? 'admin-glow' : 'client-glow'}`}>
+                          {isAdminLog ? <ShieldCheck size={16} /> : <User size={16} />}
+                        </div>
+                      </div>
+                      <div className="log-main-info">
+                        <div className="log-user-line">
+                          <strong>{log.displayName || log.email}</strong>
+                          <span className="log-email-sub">({log.email})</span>
+                          <span className={`log-role-badge ${isAdminLog ? 'admin' : 'client'}`}>
+                            {log.role?.toUpperCase() || 'USUARIO'}
+                          </span>
+                        </div>
+                        <span className="log-action-text">{log.action}</span>
+                      </div>
+                      <div className="log-meta-col">
+                        <span className="log-device-badge">{log.device || '💻 Dispositivo Web'}</span>
+                        <span className="log-date-time">{log.displayDate || new Date(log.timestamp).toLocaleString('es-CO')}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Modal: Crear Nuevo Usuario o Administrador Directo */}
+        {isNewUserModalOpen && (
+          <div className="modal-overlay" onClick={() => setIsNewUserModalOpen(false)}>
+            <div className="modal-content new-user-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <div className="modal-title-box">
+                  <ShieldCheck size={24} className="icon-cyan" />
+                  <div>
+                    <h3>Crear Nuevo Usuario o Administrador</h3>
+                    <p>Registra un nuevo miembro del equipo o cliente con acceso directo</p>
+                  </div>
+                </div>
+                <button className="close-btn" onClick={() => setIsNewUserModalOpen(false)}>
+                  <X size={20} />
+                </button>
+              </div>
+
+              {newUserFeedback && (
+                <div className="form-feedback-alert error">
+                  <AlertCircle size={16} />
+                  <span>{newUserFeedback}</span>
+                </div>
+              )}
+
+              <form 
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setNewUserFeedback(null);
+                  const fd = new FormData(e.target);
+                  const name = fd.get('name');
+                  const email = fd.get('email');
+                  const password = fd.get('password');
+                  const phone = fd.get('phone') || '';
+                  const city = fd.get('city') || 'Medellín';
+                  const role = fd.get('role');
+
+                  const res = await registerClient(name, email, password, phone, city, role === 'admin' ? 'JJTECH2026' : '');
+                  if (res.success) {
+                    setIsNewUserModalOpen(false);
+                    alert(`✅ ¡Usuario ${name} registrado exitosamente con rol de ${role.toUpperCase()}!`);
+                  } else {
+                    setNewUserFeedback(res.error || 'Error creando usuario');
+                  }
+                }}
+                className="new-user-form"
+              >
+                <div className="form-group">
+                  <label>Nombre y Apellidos *</label>
+                  <input name="name" type="text" required placeholder="Ej. Carlos Mendoza" />
+                </div>
+
+                <div className="form-group">
+                  <label>Correo Electrónico *</label>
+                  <input name="email" type="email" required placeholder="usuario@jjtech.com o personal" />
+                </div>
+
+                <div className="form-group">
+                  <label>Contraseña de Acceso *</label>
+                  <input name="password" type="password" required placeholder="Mínimo 6 caracteres" />
+                </div>
+
+                <div className="form-row-2">
+                  <div className="form-group">
+                    <label>Teléfono WhatsApp</label>
+                    <input name="phone" type="tel" placeholder="Ej. 302 576 9589" />
+                  </div>
+                  <div className="form-group">
+                    <label>Municipio</label>
+                    <input name="city" type="text" defaultValue="Medellín" placeholder="Medellín, Envigado..." />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Rol de Usuario *</label>
+                  <select name="role" defaultValue="admin" className="role-select">
+                    <option value="admin">🛡️ Administrador Total (Acceso a Consola, Inventarios, Finanzas y Obras)</option>
+                    <option value="client">👤 Cliente (Acceso a Cotizaciones, Servicios y Tienda)</option>
+                  </select>
+                </div>
+
+                <div className="modal-actions">
+                  <button type="button" className="btn btn-outline" onClick={() => setIsNewUserModalOpen(false)}>
+                    Cancelar
+                  </button>
+                  <button type="submit" className="btn btn-accent">
+                    <Plus size={16} />
+                    <span>Guardar Usuario</span>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}

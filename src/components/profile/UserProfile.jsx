@@ -25,10 +25,24 @@ import { createWhatsAppQuoteLink } from '../../utils/whatsappHelper';
 import './UserProfile.scss';
 
 export const UserProfile = ({ setActiveTab, onOpenAuthModal }) => {
-  const { currentUser, isAuthenticated, logout } = useAuth();
+  const { currentUser, isAuthenticated, logout, claimAdminRole, isAdmin } = useAuth();
   const { quotes, bookings } = useData();
 
   const [activeSubtab, setActiveSubtab] = useState('quotes'); // 'quotes' or 'bookings'
+  const [claimKey, setClaimKey] = useState('');
+  const [claimMsg, setClaimMsg] = useState(null);
+  const [showClaimBox, setShowClaimBox] = useState(false);
+
+  const handleClaim = async (e) => {
+    e.preventDefault();
+    setClaimMsg(null);
+    const res = await claimAdminRole(claimKey);
+    if (res.success) {
+      setClaimMsg({ type: 'success', text: '✅ ¡Permisos de Administrador activados con éxito! Ahora tienes acceso completo a la Consola JJ Tech.' });
+    } else {
+      setClaimMsg({ type: 'error', text: res.error || 'Clave incorrecta.' });
+    }
+  };
 
   // If not logged in, prompt to log in
   if (!isAuthenticated) {
@@ -90,6 +104,51 @@ export const UserProfile = ({ setActiveTab, onOpenAuthModal }) => {
             </button>
           </div>
         </div>
+
+        {/* Claim / Active Admin Role Banner */}
+        {!isAdmin ? (
+          <div className="claim-admin-banner glass-card">
+            <div className="claim-left">
+              <ShieldCheck size={24} className="icon-cyan" />
+              <div>
+                <strong>¿Eres el Propietario o Administrador de JJ Tech?</strong>
+                <p>Activa tus permisos de Administrador Total ingresando tu llave maestra de seguridad.</p>
+              </div>
+            </div>
+            {!showClaimBox ? (
+              <button className="btn btn-outline btn-sm" onClick={() => setShowClaimBox(true)}>
+                Activar Modo Administrador
+              </button>
+            ) : (
+              <form onSubmit={handleClaim} className="claim-form">
+                <input 
+                  type="password"
+                  placeholder="Escribe JJTECH2026"
+                  value={claimKey}
+                  onChange={(e) => setClaimKey(e.target.value)}
+                  required
+                />
+                <button type="submit" className="btn btn-accent btn-sm">Confirmar</button>
+                <button type="button" className="btn btn-outline btn-sm" onClick={() => setShowClaimBox(false)}>Cancelar</button>
+              </form>
+            )}
+            {claimMsg && (
+              <div className={`claim-alert ${claimMsg.type}`}>
+                {claimMsg.text}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="admin-status-banner glass-card">
+            <div className="status-text">
+              <ShieldCheck size={22} className="icon-cyan" />
+              <span>Tienes permisos de <strong>Administrador Total</strong> activos. Puedes gestionar obras, catálogo y delegar roles.</span>
+            </div>
+            <button className="btn btn-primary btn-sm" onClick={() => setActiveTab('admin')}>
+              Ir al Panel Administrativo
+            </button>
+          </div>
+        )}
 
         {/* Profile Tabs */}
         <div className="profile-tabs-nav">
