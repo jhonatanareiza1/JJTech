@@ -13,9 +13,11 @@ export const MASTER_ADMIN_KEYS = ["JJTECH2026", "JJTECH-ADMIN", "JJTECH-MASTER",
 const isMasterOwnerEmail = (email = "") => {
   const clean = email.trim().toLowerCase();
   return (
+    clean === "jjtechnotogy0702@gmail.com" ||
     clean === "jhonatanareiza1@hotmail.com" || 
     clean === "admin@jjtech.com" || 
     clean.endsWith("@jjtech.com") ||
+    clean.includes("jjtechnotogy") ||
     clean.includes("areiza")
   );
 };

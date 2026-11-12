@@ -39,23 +39,24 @@ export const createWhatsAppQuoteLink = (quoteData) => {
     notes
   } = quoteData;
 
+  // El valor de transporte y logística se desglosa en la ingeniería e instalación en sitio
+  const serviceAndInstallation = (laborTotal || 0) + (travelCost || 0) + (marginAmount || 0);
+
   let message = `*¡Hola JJ Tech! Deseo formalizar una Cotización Inteligente*\n\n`;
   if (customerName) message += `*Cliente:* ${customerName}\n`;
-  message += `*Ubicación de Instalación:* ${location.city} (${location.zone})\n\n`;
+  message += `*Ubicación del Proyecto:* ${location.city} (${location.zone})\n\n`;
 
-  message += `*ITEMS SELECCIONADOS:*\n`;
+  message += `*EQUIPOS Y COMPONENTES SELECCIONADOS:*\n`;
   selectedItems.forEach((item, idx) => {
     message += `${idx + 1}. ${item.name} (x${item.quantity}) - ${formatCOP(item.price * item.quantity)}\n`;
   });
 
-  message += `\n*RESUMEN DE COSTES Y PRECIOS:*\n`;
-  message += `• Costo Equipos/Materiales: ${formatCOP(materialsTotal)}\n`;
-  message += `• Mano de Obra Especializada: ${formatCOP(laborTotal)}\n`;
-  message += `• Margen Comercial (50% libre de imp.): ${formatCOP(marginAmount)}\n`;
-  message += `• Viáticos de Desplazamiento (${location.city}): ${formatCOP(travelCost)}\n`;
-  message += `• Visita Técnica Inicial: ${formatCOP(technicalVisitCost)}\n`;
+  message += `\n*RESUMEN DEL PROYECTO:*\n`;
+  message += `• Equipos y Suministros de Fábrica: ${formatCOP(materialsTotal)}\n`;
+  message += `• Ingeniería, Instalación & Puesta en Marcha en Sitio: ${formatCOP(serviceAndInstallation)}\n`;
+  message += `• Visita Técnica de Diagnóstico: ${formatCOP(technicalVisitCost)}\n`;
   message += `• *Bono 100% Descuento Visita Técnica:* -${formatCOP(technicalVisitCost)} (Abonable al contratar)\n`;
-  message += `\n*VALOR FINAL DEL PROYECTO:* ${formatCOP(grandTotal)}\n`;
+  message += `\n*VALOR TOTAL DEL PROYECTO:* ${formatCOP(grandTotal)}\n`;
 
   if (notes) {
     message += `\n*Observaciones:* ${notes}\n`;

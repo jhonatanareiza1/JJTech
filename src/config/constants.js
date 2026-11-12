@@ -11,8 +11,8 @@ export const COMPANY_INFO = {
   phone: "+57 302 576 9589",
   whatsappRaw: "573025769589",
   secondaryPhone: "+57 301 123 4567",
-  email: "contacto@jjtech.com",
-  adminEmail: "admin@jjtech.com",
+  email: "jjtechnotogy0702@gmail.com",
+  adminEmail: "jjtechnotogy0702@gmail.com",
   socials: {
     instagram: "https://instagram.com/jjtech_domotica",
     facebook: "https://facebook.com/jjtechcolombia",

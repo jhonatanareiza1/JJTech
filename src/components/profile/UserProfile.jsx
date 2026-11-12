@@ -197,23 +197,19 @@ export const UserProfile = ({ setActiveTab, onOpenAuthModal }) => {
 
                     <div className="quote-breakdown-mini">
                       <div className="b-row">
-                        <span>Costo Equipos & Mano Obra:</span>
-                        <strong>{formatCOP(q.materialsTotal + q.laborTotal)}</strong>
+                        <span>Equipos y Dispositivos:</span>
+                        <strong>{formatCOP(q.materialsTotal)}</strong>
                       </div>
                       <div className="b-row">
-                        <span>Margen 50% Libre Imp.:</span>
-                        <strong className="cyan-text">+{formatCOP(q.marginAmount)}</strong>
-                      </div>
-                      <div className="b-row">
-                        <span>Viáticos de Desplazamiento:</span>
-                        <strong>+{formatCOP(q.travelCost)}</strong>
+                        <span>Ingeniería & Instalación en Sitio:</span>
+                        <strong className="cyan-text">{formatCOP((q.laborTotal || 0) + (q.travelCost || 0) + (q.marginAmount || 0))}</strong>
                       </div>
                       <div className="b-row bonus">
                         <span>Visita Técnica 100% Deducible:</span>
                         <strong>-{formatCOP(q.visitDiscount || q.technicalVisitCost || 120000)}</strong>
                       </div>
                       <div className="b-row grand-total">
-                        <span>TOTAL DEL PROYECTO:</span>
+                        <span>VALOR TOTAL DEL PROYECTO:</span>
                         <strong>{formatCOP(q.grandTotal)}</strong>
                       </div>
                     </div>

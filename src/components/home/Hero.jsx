@@ -69,7 +69,7 @@ export const Hero = ({ setActiveTab }) => {
                 onClick={() => setActiveTab('cotizador')}
               >
                 <Calculator size={20} />
-                <span>Cotizar con Viáticos</span>
+                <span>Cotizar Proyecto</span>
               </button>
 
               <button 

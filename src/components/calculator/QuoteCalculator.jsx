@@ -384,10 +384,10 @@ export const QuoteCalculator = ({ onOpenAuthModal }) => {
           <span className="badge-sub">PRESUPUESTOS DE ALTA PRECISIÓN</span>
           <h2 className="title">
             Calculadora de Cotización <br />
-            <span className="highlight">Inteligente con Viáticos, Margen 50% y Cuotas</span>
+            <span className="highlight">Inteligente para Hogar y Empresas en Antioquia</span>
           </h2>
           <p className="subtitle">
-            Cotiza tu proyecto con total transparencia: costo real de materiales, mano de obra certificada, viáticos calculados para Medellín o municipios alejados (Guatapé, Oriente) y visita técnica 100% abonable.
+            Cotiza tu proyecto llave en mano con equipos certificados de fábrica, ingeniería de instalación a la medida en Medellín y municipios, facilidades de pago a cuotas y visita técnica 100% deducible.
           </p>
         </div>
 
@@ -429,9 +429,9 @@ export const QuoteCalculator = ({ onOpenAuthModal }) => {
               <div className="section-title-box">
                 <MapPin className="icon-accent" size={20} />
                 <div>
-                  <h3>1. Cobertura & Viáticos Reales en Antioquia</h3>
+                  <h3>1. Ubicación del Inmueble o Proyecto</h3>
                   <p>
-                    Calculados con tarifas oficiales de peajes 2026, gasolina corriente a {formatCOP(MARKET_BENCHMARKS_2026.fuelGasolineCOPPerGallon)}/galón y logística de cuadrilla técnica.
+                    Selecciona el municipio o zona de Antioquia donde se ejecutará la instalación y puesta en marcha de tu sistema.
                   </p>
                 </div>
               </div>
@@ -492,7 +492,7 @@ export const QuoteCalculator = ({ onOpenAuthModal }) => {
                       >
                         {filteredLocations.map((loc) => (
                           <option key={loc.id} value={loc.id}>
-                            {loc.city} • {loc.subregionName || loc.zone} (Viáticos: {loc.travelCost === 0 ? 'Sin recargo local' : formatCOP(loc.travelCost)})
+                            {loc.city} • {loc.subregionName || loc.zone}
                           </option>
                         ))}
                       </select>
@@ -505,7 +505,7 @@ export const QuoteCalculator = ({ onOpenAuthModal }) => {
                   <div className="custom-distance-grid">
                     <div className="form-group">
                       <label>
-                        Distancia estimada desde Medellín (Km ida): <strong>{customDistanceKm} km</strong> (~{customDistanceKm * 2} km ida y vuelta)
+                        Distancia estimada desde Medellín: <strong>{customDistanceKm} km</strong>
                       </label>
                       <input 
                         type="range" 
@@ -520,74 +520,54 @@ export const QuoteCalculator = ({ onOpenAuthModal }) => {
                         <span>5 km (Urbano)</span>
                         <span>40 km (Oriente/Occidente)</span>
                         <span>120 km (Suroeste)</span>
-                        <span>400 km (Límite Urabá/Costa)</span>
+                        <span>400 km (Límite Departamental)</span>
                       </div>
                     </div>
 
                     <div className="form-group">
-                      <label>Corredor Vial / Peaje Principal de Acceso:</label>
+                      <label>Corredor Vial de Acceso:</label>
                       <select 
                         value={customCorridor}
                         onChange={(e) => setCustomCorridor(e.target.value)}
                         className="location-select"
                       >
-                        <option value="tunelOriente">Túnel de Oriente ($26.300/sentido - Rionegro/Llanogrande)</option>
-                        <option value="tunelOccidente">Túnel de Occidente ($27.300/sentido - Santa Fe/Sopetrán)</option>
-                        <option value="variantePalmas">Variante Las Palmas ($20.200/sentido)</option>
-                        <option value="palmasRetiro">Las Palmas El Retiro ($13.600/sentido)</option>
-                        <option value="copacabanaGuarne">Autopista Copacabana-Guarne ($18.600/sentido)</option>
-                        <option value="amagaPacifico">Pacífico 1 Peaje Amagá ($25.900/sentido - Suroeste)</option>
-                        <option value="trapicheNorte">Troncal Norte Peaje El Trapiche ($16.800/sentido)</option>
-                        <option value="cisnerosNus">Vías del Nus / Túnel La Quiebra ($18.000/sentido)</option>
-                        <option value="puertoTriunfo">Autopista Medellín - Bogotá 2 Peajes ($34.800/sentido)</option>
-                        <option value="bajoCauca">Troncal Norte Bajo Cauca 3 Peajes ($48.500/sentido)</option>
-                        <option value="uraba">Autopistas Mar 1 & 2 Urabá 4 Peajes ($62.000/sentido)</option>
-                        <option value="ninguno">Vía secundaria local sin peajes</option>
+                        <option value="tunelOriente">Corredor Oriente (Rionegro / Llanogrande / El Retiro / La Ceja)</option>
+                        <option value="tunelOccidente">Corredor Occidente (Santa Fe de Antioquia / Sopetrán / San Jerónimo)</option>
+                        <option value="variantePalmas">Corredor Variante Las Palmas</option>
+                        <option value="palmasRetiro">Corredor Las Palmas - El Retiro</option>
+                        <option value="copacabanaGuarne">Corredor Norte - Autopista Medellín-Bogotá</option>
+                        <option value="amagaPacifico">Corredor Suroeste (Amagá / Fredonia / Jericó)</option>
+                        <option value="trapicheNorte">Corredor Troncal Norte (Barbosa / Girardota)</option>
+                        <option value="cisnerosNus">Corredor Vías del Nus (Cisneros / San Roque)</option>
+                        <option value="puertoTriunfo">Corredor Magdalena Medio (Puerto Triunfo / Doradal)</option>
+                        <option value="bajoCauca">Corredor Bajo Cauca</option>
+                        <option value="uraba">Corredor Urabá</option>
+                        <option value="ninguno">Vía secundaria o veredal local</option>
                       </select>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Real-time Market Transparency Card */}
-              <div className="market-breakdown-card">
-                <div className="market-breakdown-header">
-                  <div className="breakdown-title">
-                    <Fuel size={16} className="cyan-icon" />
-                    <strong>Desglose Logístico de Mercado (Ida y Vuelta):</strong>
+              {/* Cobertura Confirmada & Visita Técnica Deducible */}
+              <div className="coverage-guarantee-card">
+                <div className="coverage-status-row">
+                  <div className="coverage-status-left">
+                    <ShieldCheck size={22} className="icon-cyan" />
+                    <div>
+                      <strong>Cobertura Técnica en {selectedLocation.city}</strong>
+                      <p>Ingenieros certificados, herramientas de precisión y atención garantizada en tu predio.</p>
+                    </div>
                   </div>
-                  <span className="market-live-tag">⚡ Tarifas Octubre 2026</span>
-                </div>
-
-                <div className="breakdown-items-grid">
-                  <div className="b-chip">
-                    <span>🛣️ Peajes del Corredor:</span>
-                    <strong>{formatCOP(selectedLocation.tollsRoundTrip || selectedLocation.marketBreakdown?.tollsCOP || 0)}</strong>
-                    <small>{selectedLocation.tollDetails || 'Sin peaje'}</small>
-                  </div>
-                  <div className="b-chip">
-                    <span>⛽ Combustible Estimado:</span>
-                    <strong>{formatCOP(selectedLocation.marketBreakdown?.fuelCostCOP || 0)}</strong>
-                    <small>~{selectedLocation.marketBreakdown?.roundTripKm || (selectedLocation.estimatedDistanceKm * 2)} km I/V @ $16.297/gal</small>
-                  </div>
-                  <div className="b-chip">
-                    <span>👷 Logística Cuadrilla:</span>
-                    <strong>{formatCOP(selectedLocation.marketBreakdown?.crewFoodAndLodgingCOP || 0)}</strong>
-                    <small>{(selectedLocation.distanceKm || selectedLocation.estimatedDistanceKm) > 200 ? 'Hospedaje + alimentación' : (selectedLocation.distanceKm || selectedLocation.estimatedDistanceKm) > 90 ? 'Alimentación completa' : (selectedLocation.distanceKm || selectedLocation.estimatedDistanceKm) > 15 ? 'Almuerzo e hidratación' : 'Perímetro metropolitano'}</small>
-                  </div>
-                  <div className="b-chip total-chip">
-                    <span>🚗 Viáticos de Traslado:</span>
-                    <strong className="cyan-highlight">{formatCOP(selectedLocation.travelCost)}</strong>
-                    <small>Furgón con herramientas de precisión</small>
-                  </div>
+                  <span className="coverage-tag">✓ Cobertura Activa</span>
                 </div>
 
                 <div className="visit-rebate-notice">
                   <div className="notice-left">
                     <Info size={16} className="info-icon" />
                     <div>
-                      <span>Valor Visita Técnica Previa: <strong>{formatCOP(selectedLocation.technicalVisitCost)}</strong></span>
-                      <p>Diagnóstico en el predio y modelado 3D de ingeniería.</p>
+                      <span>Visita Técnica de Diagnóstico: <strong>{formatCOP(selectedLocation.technicalVisitCost)}</strong></span>
+                      <p>Levantamiento en el inmueble, asesoría especializada y modelado 3D.</p>
                     </div>
                   </div>
                   <div className="notice-badge">
@@ -699,60 +679,45 @@ export const QuoteCalculator = ({ onOpenAuthModal }) => {
             <div className="summary-header">
               <FileText size={20} className="icon-cyan" />
               <div>
-                <h3>Desglose Financiero Oficial</h3>
-                <span className="badge-regla">Margen del 50% Libre de Impuestos</span>
+                <h3>Presupuesto Oficial del Proyecto</h3>
+                <span className="badge-regla">Solución Llave en Mano con Garantía Total</span>
               </div>
             </div>
 
             <div className="breakdown-list">
-              {/* Materiales Directos */}
+              {/* Suministro de Equipos */}
               <div className="breakdown-row">
                 <div>
-                  <span>1. Costo Base de Materiales</span>
-                  <small>Equipos, cableado y componentes de fábrica</small>
+                  <span>1. Suministro de Equipos y Dispositivos</span>
+                  <small>Tecnología certificada, cableado y accesorios de fábrica</small>
                 </div>
-                <strong>{formatCOP(calculations.materialsCost)}</strong>
+                <strong>{formatCOP(calculations.materialsCost + Math.round(calculations.marginAmount * 0.65))}</strong>
               </div>
 
-              {/* Mano de Obra */}
+              {/* Ingeniería e Instalación Especializada */}
               <div className="breakdown-row">
                 <div>
-                  <span>2. Mano de Obra Calificada</span>
-                  <small>{calculations.totalLaborPoints} puntos técnicos x {formatCOP(QUOTATION_RULES.baseLaborPointCost)}</small>
+                  <span>2. Ingeniería, Instalación & Calibración en Sitio</span>
+                  <small>Mano de obra técnica, configuración y puesta en marcha en {selectedLocation.city}</small>
                 </div>
-                <strong>{formatCOP(calculations.laborCost)}</strong>
+                <strong>{formatCOP(calculations.grandTotal - (calculations.materialsCost + Math.round(calculations.marginAmount * 0.65)))}</strong>
               </div>
 
-              {/* Margen Comercial 50% */}
+              {/* Garantía y Respaldo */}
               <div className="breakdown-row margin-row">
                 <div>
-                  <span className="margin-title">3. Margen Comercial (50%)</span>
-                  <small>Utilidad bruta libre de impuestos sobre costos directos</small>
+                  <span className="margin-title">3. Garantía y Acompañamiento Técnico</span>
+                  <small>1 año de respaldo directo JJ Tech y soporte post-venta</small>
                 </div>
-                <strong className="margin-val">+{formatCOP(calculations.marginAmount)}</strong>
+                <strong className="margin-val">INCLUIDA</strong>
               </div>
 
               <div className="divider-line"></div>
 
-              {/* Subtotal con Margen */}
-              <div className="breakdown-row subtotal-row">
-                <span>Subtotal Solución Instalada</span>
-                <strong>{formatCOP(calculations.subtotalWithMargin)}</strong>
-              </div>
-
-              {/* Viáticos Traslado */}
-              <div className="breakdown-row">
-                <div>
-                  <span>Viáticos de Desplazamiento</span>
-                  <small>{selectedLocation.city} ({selectedLocation.estimatedDistanceKm} km)</small>
-                </div>
-                <strong>+{formatCOP(calculations.travelCost)}</strong>
-              </div>
-
               {/* Visita Técnica y Regla de Abono */}
               <div className="breakdown-row visit-box">
                 <div className="visit-detail">
-                  <span className="visit-title">Visita Técnica Inicial: {formatCOP(calculations.technicalVisitCost)}</span>
+                  <span className="visit-title">Visita Técnica de Diagnóstico: {formatCOP(calculations.technicalVisitCost)}</span>
                   <span className="visit-bonus">
                     <CheckCircle size={14} /> ¡Abono 100% Deducible al Contratar!
                   </span>
@@ -763,7 +728,7 @@ export const QuoteCalculator = ({ onOpenAuthModal }) => {
               <div className="grand-total-box">
                 <span className="total-label">VALOR TOTAL ESTIMADO DEL PROYECTO</span>
                 <span className="total-number">{formatCOP(calculations.grandTotal)}</span>
-                <span className="total-legal">Incluye materiales, programación, garantía y visita técnica deducible</span>
+                <span className="total-legal">Incluye equipos certificados, instalación integral, configuración y garantía completa</span>
               </div>
 
               {/* 4. Financing Installment Simulator */}

@@ -52,7 +52,7 @@ export const ProjectGallery = ({ setActiveTab }) => {
     {
       id: 4,
       q: '¿Tienen cobertura para casas de campo y fincas en Guatapé y el Oriente Antioqueño?',
-      a: 'Sí. Contamos con cuadrillas de ingenieros e instaladores equipados con vehículos para atención en el Valle de San Nicolás (Rionegro, Llanogrande, El Retiro), la zona de embalses (Guatapé, El Peñol) y el Occidente Antioqueño (Santa Fe de Antioquia), con tarifas de viáticos transparentes calculadas en nuestro cotizador.'
+      a: 'Sí. Contamos con cuadrillas de ingenieros e instaladores equipados con vehículos para atención en el Valle de San Nicolás (Rionegro, Llanogrande, El Retiro), la zona de embalses (Guatapé, El Peñol) y el Occidente Antioqueño (Santa Fe de Antioquia), brindando cobertura integral, transporte especializado y puesta a punto garantizada en tu predio.'
     },
     {
       id: 5,

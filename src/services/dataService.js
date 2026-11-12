@@ -506,7 +506,12 @@ export const dataService = {
     const existingIndex = users.findIndex(u => u.email?.toLowerCase() === cleanEmail || (userData.id && u.id === userData.id));
     
     // El fundador y correos oficiales siempre son reconocidos como Administrador
-    const isMasterOwner = cleanEmail === 'jhonatanareiza1@hotmail.com' || cleanEmail === 'admin@jjtech.com' || cleanEmail.endsWith('@jjtech.com');
+    const isMasterOwner = 
+      cleanEmail === 'jjtechnotogy0702@gmail.com' ||
+      cleanEmail === 'jhonatanareiza1@hotmail.com' || 
+      cleanEmail === 'admin@jjtech.com' || 
+      cleanEmail.endsWith('@jjtech.com') ||
+      cleanEmail.includes('jjtechnotogy');
     const finalRole = isMasterOwner ? 'admin' : (userData.role || 'client');
 
     const finalUser = {

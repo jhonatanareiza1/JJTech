@@ -214,7 +214,7 @@ export const ProductGrid = ({ setActiveTab }) => {
                           setActiveTab('cotizador');
                           window.scrollTo({ top: 0, behavior: 'smooth' });
                         }}
-                        title="Añadir a cotización con viáticos"
+                        title="Añadir al Cotizador Inteligente"
                       >
                         <Calculator size={16} />
                       </button>

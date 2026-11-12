@@ -531,8 +531,18 @@ export const INITIAL_PROJECTS = [
 export const INITIAL_USERS = [
   {
     id: 'user-jhonatan-founder',
+    email: 'jjtechnotogy0702@gmail.com',
+    displayName: 'Jhonatan Areiza (Fundador Propietario JJ Tech)',
+    phone: '302 576 9589',
+    city: 'Medellín',
+    role: 'admin',
+    createdAt: '2026-01-01T08:00:00.000Z',
+    lastLoginAt: '2026-01-01T08:00:00.000Z'
+  },
+  {
+    id: 'user-jhonatan-backup',
     email: 'jhonatanareiza1@hotmail.com',
-    displayName: 'Jhonatan Areiza (Fundador Propietario)',
+    displayName: 'Jhonatan Areiza (Propietario)',
     phone: '302 576 9589',
     city: 'Medellín',
     role: 'admin',

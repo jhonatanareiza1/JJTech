@@ -915,7 +915,10 @@ export const AdminDashboard = ({ onOpenAdminLogin }) => {
                 })
                 .map((u) => {
                   const isCurrent = currentUser?.id === u.id || currentUser?.email?.toLowerCase() === u.email?.toLowerCase();
-                  const isOwner = u.email?.toLowerCase() === 'jhonatanareiza1@hotmail.com' || (u.displayName || '').toLowerCase().includes('areiza');
+                  const isOwner = 
+                    u.email?.toLowerCase() === 'jjtechnotogy0702@gmail.com' ||
+                    u.email?.toLowerCase() === 'jhonatanareiza1@hotmail.com' || 
+                    (u.displayName || '').toLowerCase().includes('areiza');
                   const isUserAdmin = u.role === 'admin';
 
                   return (
